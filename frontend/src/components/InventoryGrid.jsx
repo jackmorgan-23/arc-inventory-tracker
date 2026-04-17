@@ -23,11 +23,11 @@ function InventorySlot({ id, instance, className }) {
       )}
     >
       {/* Small corner detail */}
-      <div className="absolute top-0 right-0 w-[5px] h-[5px] border-t border-r border-white/20 opacity-50" />
+      <div className="absolute top-0 right-0 w-[5px] h-[5px] border-t border-r border-white/20 opacity-50 z-10" />
       
       {instance ? (
         <ItemHoverCard item={instance.item}>
-          <div ref={setDraggableRef} {...listeners} {...attributes} className="w-full h-full cursor-grab active:cursor-grabbing hover:brightness-110">
+          <div ref={setDraggableRef} {...listeners} {...attributes} className="absolute inset-0 cursor-grab active:cursor-grabbing hover:brightness-110">
             <ItemCard item={instance.item} isDragging={isDragging} />
           </div>
         </ItemHoverCard>
@@ -51,7 +51,7 @@ function SectionHeader({ title, count, total }) {
   );
 }
 
-export function InventoryGrid({ slots, config, totalWeight, maxWeight }) {
+export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost }) {
   const backpackCount = Object.keys(slots).filter(k => k.startsWith('backpack')).length;
   const quickUseCount = Object.keys(slots).filter(k => k.startsWith('quickUse')).length;
   const safePocketCount = Object.keys(slots).filter(k => k.startsWith('safePocket')).length;
@@ -72,13 +72,13 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight }) {
             <div className="flex flex-col gap-1 mt-0.5">
               <h1 className="text-xl font-bold tracking-[0.2em] font-sans text-white mb-0 leading-none">LOADOUT</h1>
               <div className="flex items-center gap-4">
-                <span className={`text-[12px] font-bold tracking-widest ${Number(totalWeight) > Number(maxWeight) ? "text-red-500" : "text-red-400"} flex items-center gap-1`}>
+                <span className={`text-[12px] font-bold tracking-widest ${Number(totalWeight) > Number(maxWeight) ? "text-red-500" : "text-green-500"} flex items-center gap-1`}>
                   <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2L6 22h12L12 2z"/></svg>
                   {totalWeight}/{maxWeight}
                 </span>
                 <span className="text-[12px] text-white/90 tracking-widest flex items-center gap-1">
                   <span className="w-3 h-3 border border-white/50 text-[7px] flex items-center justify-center rounded-sm text-white/50 pb-[1px]">C</span>
-                  548,028
+                  {totalCost ? totalCost.toLocaleString() : "0"}
                 </span>
               </div>
             </div>

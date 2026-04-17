@@ -28,6 +28,16 @@ export function useInventory() {
     return total.toFixed(1);
   }, [slots]);
 
+  const calculateCost = useCallback(() => {
+    let total = 0;
+    Object.values(slots).forEach((instance) => {
+      if (instance && instance.item && instance.item.value) {
+        total += instance.item.value;
+      }
+    });
+    return total;
+  }, [slots]);
+
   const augmentItem = [slots['equipment-0'], slots['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
   const augmentStats = (augmentItem && AUGMENT_STATS[augmentItem.id]) || AUGMENT_STATS.default;
 
@@ -144,6 +154,7 @@ export function useInventory() {
     config,
     activeItem,
     totalWeight: calculateWeight(),
+    totalCost: calculateCost(),
     maxWeight: config.wlimit.toFixed(1),
     handleDragStart,
     handleDragEnd,

@@ -13,6 +13,7 @@ export async function fetchItems() {
       if (weaponCategories.includes(item.type)) uiType = 'weapon';
       else if (item.type === 'ammunition') uiType = 'ammo';
       else if (item.type === 'quick use') uiType = 'consumable';
+      else if (item.type === 'augment' || item.type === 'shield') uiType = item.type;
       
       return {
         id: item.id,

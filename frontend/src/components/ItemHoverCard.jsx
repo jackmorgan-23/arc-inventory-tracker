@@ -5,10 +5,11 @@ import { cn } from './ItemCard';
 
 const rarityColors = {
   common: "bg-zinc-600/20 text-zinc-300 border-zinc-500/30",
-  uncommon: "bg-cyan-500/20 text-cyan-300 border-cyan-400/50",
-  rare: "bg-indigo-500/20 text-indigo-300 border-indigo-400/50",
-  elite: "bg-yellow-500/20 text-yellow-300 border-yellow-400/50",
-  legendary: "bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-400/50"
+  uncommon: "bg-green-500/20 text-green-300 border-green-400/50",
+  rare: "bg-blue-500/20 text-blue-300 border-blue-400/50",
+  epic: "bg-purple-500/20 text-purple-300 border-purple-400/50",
+  elite: "bg-purple-500/20 text-purple-300 border-purple-400/50",
+  legendary: "bg-orange-500/20 text-orange-300 border-orange-400/50"
 };
 
 export function ItemHoverCard({ item, children }) {

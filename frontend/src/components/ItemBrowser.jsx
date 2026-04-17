@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { fetchItems } from '../lib/items';
 import { ItemCard } from './ItemCard';
 import { ScrollArea } from './ui/scroll-area';
@@ -7,25 +8,31 @@ import { Input } from './ui/input';
 import { Trash2, Search } from 'lucide-react';
 import { ItemHoverCard } from './ItemHoverCard';
 
-function DraggableItemBrowserCard({ item }) {
+function DraggableItemBrowserCard({ item, virtualStyle }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `browser-${item.id}`,
     data: { item, sourceSlot: null },
   });
 
   return (
-    <ItemHoverCard item={item}>
-      <div ref={setNodeRef} {...listeners} {...attributes} className="h-28 mb-3 last:mb-0 relative cursor-grab active:cursor-grabbing transition-transform">
-        <ItemCard item={item} isDragging={isDragging} />
-      </div>
-    </ItemHoverCard>
+    <div
+      style={virtualStyle}
+      className="pb-3" // Adds the gap between cards
+    >
+      <ItemHoverCard item={item}>
+        <div ref={setNodeRef} {...listeners} {...attributes} className="h-full w-full relative cursor-grab active:cursor-grabbing transition-transform">
+          <ItemCard item={item} isDragging={isDragging} />
+        </div>
+      </ItemHoverCard>
+    </div>
   );
 }
 
 export function ItemBrowser() {
   const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const { setNodeRef, isOver } = useDroppable({ id: 'browser-dropzone' });
+  const { setNodeRef: setDropRef, isOver } = useDroppable({ id: 'browser-dropzone' });
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     fetchItems().then(setItems);
@@ -37,9 +44,17 @@ export function ItemBrowser() {
     return items.filter(item => item.name.toLowerCase().includes(lowerQuery));
   }, [items, searchQuery]);
 
+  // Virtualizer setup
+  const virtualizer = useVirtualizer({
+    count: filteredItems.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 124, // 112px height (h-28) + 12px margin (pb-3)
+    overscan: 5,
+  });
+
   return (
     <div 
-      ref={setNodeRef}
+      ref={setDropRef}
       className={`w-[340px] border-r border-white/5 flex flex-col z-20 backdrop-blur-3xl transition-colors ${isOver ? 'bg-red-950/90 border-red-500/50' : 'bg-[#05030a]/95'}`}
     >
       <div className="p-5 border-b border-white/5 relative overflow-hidden shrink-0">
@@ -63,11 +78,32 @@ export function ItemBrowser() {
           />
         </div>
       </div>
-      <ScrollArea className="flex-1 min-h-0 p-5">
-        <div className="flex flex-col">
-          {filteredItems.map(item => (
-            <DraggableItemBrowserCard key={item.id} item={item} />
-          ))}
+
+      <ScrollArea viewportRef={scrollRef} className="flex-1 min-h-0 p-5 pr-4 overflow-y-auto">
+        <div
+          style={{
+            height: `${virtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {virtualizer.getVirtualItems().map((virtualItem) => {
+            const item = filteredItems[virtualItem.index];
+            return (
+              <DraggableItemBrowserCard 
+                key={item.id} 
+                item={item} 
+                virtualStyle={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualItem.size}px`,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              />
+            );
+          })}
         </div>
       </ScrollArea>
     </div>

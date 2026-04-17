@@ -57,6 +57,7 @@ function App() {
             config={inventory.config}
             totalWeight={inventory.totalWeight} 
             maxWeight={inventory.maxWeight}
+            totalCost={inventory.totalCost}
           />
         </div>
       </div>
