@@ -5,13 +5,13 @@ export const BASE_CONFIG = {
   weapon: 2,
 };
 
-// Augment stats mapped by item id
-export const AUGMENT_STATS = {
-  "combat_mk1": { backpack: 16, quickUse: 4, safePocket: 1, wlimit: 45.0, name: "Combat Mk. 1" },
-  "looting_mk1": { backpack: 18, quickUse: 4, safePocket: 1, wlimit: 50.0, name: "Looting Mk. 1" },
-  "tactical_mk1": { backpack: 15, quickUse: 5, safePocket: 1, wlimit: 40.0, name: "Tactical Mk. 1" },
-  "free_loadout_augment": { backpack: 14, quickUse: 4, safePocket: 0, wlimit: 35.0, name: "Free Loadout Augment" },
-  "default": { backpack: 14, quickUse: 4, safePocket: 0, wlimit: 35.0, name: "Naked Backpack" }
+// Default stats for when no augment is equipped
+export const DEFAULT_AUGMENT_STATS = {
+  backpack: 14,
+  quickUse: 4,
+  safePocket: 0,
+  wlimit: 35.0,
+  name: "Naked Backpack"
 };
 
 export function useInventory() {
@@ -39,7 +39,7 @@ export function useInventory() {
   }, [slots]);
 
   const augmentItem = [slots['equipment-0'], slots['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
-  const augmentStats = (augmentItem && AUGMENT_STATS[augmentItem.id]) || AUGMENT_STATS.default;
+  const augmentStats = augmentItem?.augmentStats || DEFAULT_AUGMENT_STATS;
 
   const config = useMemo(() => ({
     ...BASE_CONFIG,
@@ -113,7 +113,7 @@ export function useInventory() {
       }
       
       const newAugItem = [newSlots['equipment-0'], newSlots['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
-      const newAugStats = (newAugItem && AUGMENT_STATS[newAugItem.id]) || AUGMENT_STATS.default;
+      const newAugStats = newAugItem?.augmentStats || DEFAULT_AUGMENT_STATS;
       
       const limitChecks = [
         { prefix: 'backpack-', limit: newAugStats.backpack },

@@ -12,33 +12,14 @@ const rarityBGs = {
   uncommon: "bg-green-500",
   rare: "bg-blue-500",
   epic: "bg-purple-500",
-  elite: "bg-purple-500", // Legacy support if needed
   legendary: "bg-orange-500"
 };
 
-const ammoMappings = {
-  light: ['hairpin', 'kettle', 'stitcher', 'burletta', 'bobcat'],
-  medium: ['rattler', 'arpeggio', 'venator', 'renegade', 'osprey', 'torrente', 'tempest'],
-  heavy: ['ferro', 'anvil', 'bettina'],
-  shotgun: ['il toro', 'vulcano', 'toro'],
-  launcher: ['hullcracker'],
-  energy: ['jupiter', 'equalizer', 'dolabra', 'aphelion']
-};
-
-function getAmmoType(itemName) {
-  const normalized = itemName.toLowerCase();
-  for (const [ammoType, weapons] of Object.entries(ammoMappings)) {
-    if (weapons.some(w => normalized.includes(w))) {
-      return ammoType;
-    }
-  }
-  return 'default';
-}
-
 const AmmoIcon = ({ type }) => {
   const baseClasses = "w-[15px] h-[15px] text-zinc-300 mr-[4px]";
-  switch(type) {
-    case 'light':
+  const normalized = type?.toLowerCase() || 'default';
+  
+  if (normalized.includes('light')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <path d="M5,4 L6.5,4 L6.5,18 L5,18 Z M5,4 L5.75,2 L6.5,4 Z" />
@@ -47,7 +28,8 @@ const AmmoIcon = ({ type }) => {
            <path d="M17,4 L18.5,4 L18.5,18 L17,18 Z M17,4 L17.75,2 L18.5,4 Z" />
          </svg>
        );
-    case 'medium': // 4 vertical bullets
+  }
+  if (normalized.includes('medium')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <path d="M5,4 L7,4 L7,18 L5,18 Z M5,4 L6,2 L7,4 Z" />
@@ -56,14 +38,16 @@ const AmmoIcon = ({ type }) => {
            <path d="M17,4 L19,4 L19,18 L17,18 Z M17,4 L18,2 L19,4 Z" />
          </svg>
        );
-    case 'heavy': // 2 large bullets
+  }
+  if (normalized.includes('heavy')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <path d="M6,5 L10,5 L10,19 L6,19 Z M6,5 L8,2 L10,5 Z" />
            <path d="M14,5 L18,5 L18,19 L14,19 Z M14,5 L16,2 L18,5 Z" />
          </svg>
        );
-    case 'shotgun': // 2 vertical shells
+  }
+  if (normalized.includes('shotgun')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <rect x="6" y="4" width="4" height="15" />
@@ -73,25 +57,27 @@ const AmmoIcon = ({ type }) => {
            <path d="M6,4 L10,4 L10,2 L6,2 Z M14,4 L18,4 L18,2 L14,2 Z" fill="currentColor"/>
          </svg>
        );
-    case 'launcher': // rocket
+  }
+  if (normalized.includes('launcher')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <path d="M10,8 L14,8 L14,20 L10,20 Z M10,8 L12,2 L14,8 Z M8,17 L10,17 L10,20 L8,20 Z M14,17 L16,17 L16,20 L14,20 Z" />
          </svg>
        );
-    case 'energy': // lightning cell
+  }
+  if (normalized.includes('energy')) {
        return (
          <svg viewBox="0 0 24 24" fill="currentColor" className={baseClasses}>
            <path d="M13,3 L4,14 L12,14 L11,22 L20,11 L12,11 L13,3 Z" />
          </svg>
        );
-    default:
-       return (
-         <svg viewBox="0 0 24 24" fill="currentColor" className={cn(baseClasses, "transform -rotate-[40deg]")}>
-            <path d="M7,2 L17,2 L17,14 L12,22 L7,14 Z" />
-         </svg>
-       );
   }
+  
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={cn(baseClasses, "transform -rotate-[40deg]")}>
+       <path d="M7,2 L17,2 L17,14 L12,22 L7,14 Z" />
+    </svg>
+  );
 }
 
 export function ItemCard({ item, isDragging }) {
@@ -102,7 +88,9 @@ export function ItemCard({ item, isDragging }) {
   // Extract the weapon level / tier from the end of the item name (e.g. "Anvil II" -> "II")
   const tierMatch = item.name.match(/\s(I|II|III|IV|V)$/);
   const itemTier = tierMatch ? tierMatch[1] : null;
-  const ammoType = item.type === 'weapon' ? getAmmoType(item.name) : null;
+  
+  const ammoType = item.effects?.["Ammo Type"]?.value;
+  const magSize = item.effects?.["Magazine Size"]?.value || '0';
 
   return (
     <div
@@ -142,18 +130,18 @@ export function ItemCard({ item, isDragging }) {
            {item.type === 'weapon' ? (
              <>
                <AmmoIcon type={ammoType} />
-               <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">0/6</span>
+               <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">0/{magSize}</span>
              </>
-           ) : item.quantity ? (
+           ) : item.quantity !== undefined ? (
              <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">×{item.quantity}</span>
            ) : null}
          </div>
          
-         {/* Right Side: Resources & Tier Badge */}
+         {/* Right Side: Durability & Tier Badge */}
          <div className="flex items-center gap-[6px]">
            {item.type === 'weapon' && (
              <span className="text-[10px] text-zinc-400 font-sans tracking-wide leading-none mt-[1px]">
-               21/100
+               100/100
              </span>
            )}
            {itemTier && (
