@@ -9,7 +9,7 @@ const DATA_ROOT = path.join(__dirname, '../../arcraiders-data');
 const ITEMS_DIR = path.join(DATA_ROOT, 'items');
 const IMAGES_DIR = path.join(DATA_ROOT, 'images/items');
 const IMAGES_UPSCALED_DIR = path.join(DATA_ROOT, 'images/items_upscaled');
-const AUGMENTS_API_FILE = path.join(__dirname, '../../augments_api.json');
+const AUGMENTS_API_FILE = path.join(__dirname, 'augments_api.json');
 
 const TARGET_JSON = path.join(__dirname, '../public/items_v2.json');
 const TARGET_ASSETS = path.join(__dirname, '../public/assets/items');
@@ -26,7 +26,7 @@ function parseWikitextInfobox(text) {
     if (quickuseMatch) stats.quickUse = parseInt(quickuseMatch[1], 10);
     if (safepocketMatch) stats.safePocket = parseInt(safepocketMatch[1], 10);
     if (wlimitMatch) stats.wlimit = parseFloat(wlimitMatch[1]);
-    
+
     return stats;
 }
 
@@ -39,7 +39,7 @@ async function processData() {
     console.log('--- Phase 2: Loading Augment Stats ---');
     const augmentsApi = JSON.parse(fs.readFileSync(AUGMENTS_API_FILE, 'utf8'));
     const augmentStatsMap = {};
-    
+
     Object.values(augmentsApi.query.pages).forEach(page => {
         if (!page.revisions) return;
         const text = page.revisions[0]['*'];
@@ -58,10 +58,10 @@ async function processData() {
     files.forEach(file => {
         const raw = fs.readFileSync(path.join(ITEMS_DIR, file), 'utf8');
         const data = JSON.parse(raw);
-        
+
         let uiType = 'material';
         const type = data.type?.toLowerCase() || '';
-        
+
         // Define UI Groups
         if (data.isWeapon) uiType = 'weapon';
         else if (type.includes('ammo')) uiType = 'ammo';
@@ -111,7 +111,7 @@ async function processData() {
             const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
             const normalizedId = normalize(data.id);
             const statsKey = Object.keys(augmentStatsMap).find(k => normalize(k) === normalizedId);
-            
+
             if (statsKey) {
                 item.augmentStats = augmentStatsMap[statsKey];
             }
