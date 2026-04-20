@@ -7,6 +7,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Input } from './ui/input';
 import { Trash2, Search } from 'lucide-react';
 import { ItemHoverCard } from './ItemHoverCard';
+import { cn } from '../lib/utils';
 
 function DraggableItemBrowserCard({ item, virtualStyle }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({

@@ -1,11 +1,6 @@
 import React from 'react';
 import * as Icons from 'lucide-react';
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs) {
-  return twMerge(clsx(inputs))
-}
+import { cn } from '../lib/utils';
 
 const rarityBGs = {
   common: "bg-white",
@@ -80,7 +75,7 @@ const AmmoIcon = ({ type }) => {
   );
 }
 
-export function ItemCard({ item, isDragging }) {
+export function ItemCard({ item, isDragging, equippedMods }) {
   if (!item) return null;
 
   const IconComponent = Icons[item.icon] || Icons.Box;
@@ -90,7 +85,24 @@ export function ItemCard({ item, isDragging }) {
   const itemTier = tierMatch ? tierMatch[1] : null;
   
   const ammoType = item.effects?.["Ammo Type"]?.value;
-  const magSize = item.effects?.["Magazine Size"]?.value || '0';
+  let magSize = parseInt(item.effects?.["Magazine Size"]?.value || '0', 10);
+
+  let hasMagAugment = false;
+  if (equippedMods) {
+    Object.values(equippedMods).forEach(mod => {
+      const effectValue = mod?.item?.effects?.["Magazine Size"]?.value;
+      if (effectValue) {
+        hasMagAugment = true;
+        if (typeof effectValue === 'string' && effectValue.startsWith('+')) {
+          magSize += parseInt(effectValue.substring(1), 10);
+        } else if (typeof effectValue === 'string' && effectValue.startsWith('-')) {
+          magSize -= parseInt(effectValue.substring(1), 10);
+        } else if (!isNaN(parseInt(effectValue))) {
+          magSize += parseInt(effectValue);
+        }
+      }
+    });
+  }
 
   return (
     <div
@@ -130,7 +142,9 @@ export function ItemCard({ item, isDragging }) {
            {item.type === 'weapon' ? (
              <>
                <AmmoIcon type={ammoType} />
-               <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">0/{magSize}</span>
+               <span className={cn("text-[11px] font-semibold leading-none mt-[1px]", hasMagAugment ? "text-cyan-400" : "text-zinc-200")}>
+                 0/{magSize}
+               </span>
              </>
            ) : item.quantity !== undefined ? (
              <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">×{item.quantity}</span>

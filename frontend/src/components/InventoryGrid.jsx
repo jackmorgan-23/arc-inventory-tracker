@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDroppable, useDraggable } from '@dnd-kit/core';
-import { ItemCard, cn } from './ItemCard';
+import { ItemCard } from './ItemCard';
+import { cn } from '../lib/utils';
 import { Shield } from 'lucide-react';
 import { ItemHoverCard } from './ItemHoverCard';
 
@@ -26,9 +27,9 @@ function InventorySlot({ id, instance, className }) {
       <div className="absolute top-0 right-0 w-[5px] h-[5px] border-t border-r border-white/20 opacity-50 z-10" />
       
       {instance ? (
-        <ItemHoverCard item={instance.item}>
+        <ItemHoverCard item={instance.item} equippedMods={instance.equippedMods}>
           <div ref={setDraggableRef} {...listeners} {...attributes} className="absolute inset-0 cursor-grab active:cursor-grabbing hover:brightness-110">
-            <ItemCard item={instance.item} isDragging={isDragging} />
+            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} />
           </div>
         </ItemHoverCard>
       ) : null}
@@ -95,22 +96,28 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
              <div className="flex flex-col gap-3">
                <div className="bg-[#121620]/60 rounded-xl p-3 border border-white/5 relative">
                  <InventorySlot id="weapon-0" instance={slots['weapon-0']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" />
-                 <div className="flex gap-2 justify-start px-2">
-                   {[...Array(4)].map((_, i) => (
-                     <div key={`w0-att-${i}`} className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner">
-                       <div className="w-[1px] h-3 bg-white/10 transform rotate-45" />
-                     </div>
+                 <div className="flex gap-2 justify-start px-2 min-h-[40px]">
+                   {slots['weapon-0']?.item?.modSlots && Object.keys(slots['weapon-0'].item.modSlots).map((modKey) => (
+                     <InventorySlot 
+                       key={`w0-att-${modKey}`} 
+                       id={`weapon-0-att-${modKey}`} 
+                       instance={slots['weapon-0']?.equippedMods?.[modKey]} 
+                       className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
+                     />
                    ))}
                  </div>
                </div>
                
-               <div className="bg-[#121620]/60 rounded-xl p-3 border border-white/5 relative">
+                 <div className="bg-[#121620]/60 rounded-xl p-3 border border-white/5 relative">
                  <InventorySlot id="weapon-1" instance={slots['weapon-1']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" />
-                 <div className="flex gap-2 justify-start px-2">
-                   {[...Array(4)].map((_, i) => (
-                     <div key={`w1-att-${i}`} className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner">
-                       <div className="w-[1px] h-3 bg-white/10 transform rotate-45" />
-                     </div>
+                 <div className="flex gap-2 justify-start px-2 min-h-[40px]">
+                   {slots['weapon-1']?.item?.modSlots && Object.keys(slots['weapon-1'].item.modSlots).map((modKey) => (
+                     <InventorySlot 
+                       key={`w1-att-${modKey}`} 
+                       id={`weapon-1-att-${modKey}`} 
+                       instance={slots['weapon-1']?.equippedMods?.[modKey]} 
+                       className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
+                     />
                    ))}
                  </div>
                </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { Tag, MapPin, Briefcase, Coins, Recycle } from 'lucide-react';
-import { cn } from './ItemCard';
+import { cn } from '../lib/utils';
 
 const rarityColors = {
   common: "bg-zinc-600/20 text-zinc-300 border-zinc-500/30",
@@ -12,12 +12,36 @@ const rarityColors = {
   legendary: "bg-orange-500/20 text-orange-300 border-orange-400/50"
 };
 
-export function ItemHoverCard({ item, children }) {
+export function ItemHoverCard({ item, children, equippedMods }) {
   if (!item) return <>{children}</>;
 
+  let totalWeight = item.weight || 0;
+  let totalValue = item.value || 0;
+
+  if (equippedMods) {
+    Object.values(equippedMods).forEach(mod => {
+      if (mod?.item?.weight) totalWeight += mod.item.weight;
+      if (mod?.item?.value) totalValue += mod.item.value;
+    });
+  }
+
   const stats = [];
-  if (item.weight) stats.push({ label: 'Weight', value: `${item.weight} kg`, icon: Briefcase });
-  if (item.value) stats.push({ label: 'Value', value: item.value.toLocaleString(), icon: Coins });
+  if (totalWeight > 0) {
+    const isAugmented = totalWeight !== item.weight;
+    stats.push({ 
+      label: 'Weight', 
+      value: isAugmented ? `${item.weight} kg (+${(totalWeight - item.weight).toFixed(2)})` : `${item.weight} kg`, 
+      icon: Briefcase 
+    });
+  }
+  if (totalValue > 0) {
+    const isAugmented = totalValue !== item.value;
+    stats.push({ 
+      label: 'Value', 
+      value: isAugmented ? `${item.value.toLocaleString()} (+${(totalValue - item.value).toLocaleString()})` : item.value.toLocaleString(), 
+      icon: Coins 
+    });
+  }
   
   // Dynamic stats from effects/augmentStats
   if (item.augmentStats) {

@@ -24,6 +24,11 @@ export function useInventory() {
       if (instance && instance.item && instance.item.weight) {
         total += instance.item.weight;
       }
+      if (instance?.equippedMods) {
+        Object.values(instance.equippedMods).forEach(modInst => {
+          if (modInst?.item?.weight) total += modInst.item.weight;
+        });
+      }
     });
     return total.toFixed(1);
   }, [slots]);
@@ -33,6 +38,11 @@ export function useInventory() {
     Object.values(slots).forEach((instance) => {
       if (instance && instance.item && instance.item.value) {
         total += instance.item.value;
+      }
+      if (instance?.equippedMods) {
+        Object.values(instance.equippedMods).forEach(modInst => {
+          if (modInst?.item?.value) total += modInst.item.value;
+        });
       }
     });
     return total;
@@ -71,7 +81,17 @@ export function useInventory() {
       if (sourceSlot) {
         setSlots((prev) => {
           const newSlots = { ...prev };
-          delete newSlots[sourceSlot];
+          if (sourceSlot.includes('-att-')) {
+            const [parentId, modKey] = sourceSlot.split('-att-');
+            if (newSlots[parentId]) {
+              const newParent = { ...newSlots[parentId] };
+              newParent.equippedMods = { ...newParent.equippedMods };
+              delete newParent.equippedMods[modKey];
+              newSlots[parentId] = newParent;
+            }
+          } else {
+            delete newSlots[sourceSlot];
+          }
           return newSlots;
         });
       }
@@ -84,32 +104,88 @@ export function useInventory() {
       return;
     }
 
-    const targetItemType = active.data.current.item?.type;
-    
-    if (targetSlot.startsWith('weapon') && targetItemType !== 'weapon') {
-      console.warn('Only weapons can be placed in weapon slots.');
-      return;
-    }
-    const allowedEquipmentTypes = ['augment', 'shield', 'equipment'];
-    if (targetSlot.startsWith('equipment') && !allowedEquipmentTypes.includes(targetItemType)) {
-      console.warn('Only augments or shields can be placed in equipment slots.');
-      return;
-    }
-
     setSlots((prev) => {
+      const activeItemData = active.data.current.item;
+      const targetItemType = activeItemData?.type;
+      const targetItemSubType = activeItemData?.subType;
+      
+      if (targetSlot.includes('-att-')) {
+        const isMod = targetItemType === 'material' || targetItemType === 'mod' || targetItemSubType === 'Modification' || targetItemSubType === 'Attachment';
+        if (!isMod) {
+          console.warn('Only modifications can be placed in attachment slots.');
+          return prev;
+        }
+        const [parentId, modKey] = targetSlot.split('-att-');
+        const parentInstance = prev[parentId];
+        if (!parentInstance || !parentInstance.item?.modSlots) return prev;
+        
+        const allowedMods = parentInstance.item.modSlots[modKey] || [];
+        if (!allowedMods.includes(activeItemData.id)) {
+          console.warn(`Mod not compatible with ${modKey} slot of this weapon.`);
+          return prev;
+        }
+      } else {
+        if (targetSlot.startsWith('weapon') && targetItemType !== 'weapon') {
+          console.warn('Only weapons can be placed in weapon slots.');
+          return prev;
+        }
+        const allowedEquipmentTypes = ['augment', 'shield', 'equipment'];
+        if (targetSlot.startsWith('equipment') && !allowedEquipmentTypes.includes(targetItemType)) {
+          console.warn('Only augments or shields can be placed in equipment slots.');
+          return prev;
+        }
+      }
+
       const newSlots = { ...prev };
-      const itemToMove = sourceSlot ? prev[sourceSlot] : {
-        instanceId: `inst_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-        item: active.data.current.item
+      
+      const getItemBySlotId = (id) => {
+        if (!id) return null;
+        if (id.includes('-att-')) {
+          const [parentId, modKey] = id.split('-att-');
+          return newSlots[parentId]?.equippedMods?.[modKey] || null;
+        }
+        return newSlots[id] || null;
       };
 
-      const targetItem = newSlots[targetSlot];
+      const setItemBySlotId = (id, instance) => {
+        if (id.includes('-att-')) {
+          const [parentId, modKey] = id.split('-att-');
+          if (newSlots[parentId]) {
+            const newParent = { ...newSlots[parentId] };
+            newParent.equippedMods = { ...(newParent.equippedMods || {}) };
+            if (instance) {
+              newParent.equippedMods[modKey] = instance;
+            } else {
+              delete newParent.equippedMods[modKey];
+            }
+            newSlots[parentId] = newParent;
+          }
+        } else {
+          if (instance) {
+             newSlots[id] = instance;
+             // If a weapon with attachments is overwritten by another item, 
+             // its attachments are implicitly destroyed here because the instance is overwritten.
+          } else {
+             delete newSlots[id];
+          }
+        }
+      };
+
+      const itemToMove = sourceSlot ? getItemBySlotId(sourceSlot) : {
+        instanceId: `inst_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        item: activeItemData,
+        equippedMods: {}
+      };
+
+      if (!itemToMove) return prev;
+
+      const targetItem = getItemBySlotId(targetSlot);
 
       if (sourceSlot) {
-        newSlots[targetSlot] = itemToMove;
-        newSlots[sourceSlot] = targetItem || undefined;
+        setItemBySlotId(targetSlot, itemToMove);
+        setItemBySlotId(sourceSlot, targetItem || undefined);
       } else {
-        newSlots[targetSlot] = itemToMove;
+        setItemBySlotId(targetSlot, itemToMove);
       }
       
       const newAugItem = [newSlots['equipment-0'], newSlots['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
@@ -123,15 +199,12 @@ export function useInventory() {
 
       // Clean up undefined keys and enforce boundary limits
       Object.keys(newSlots).forEach(key => {
-         if (!newSlots[key]) {
-           delete newSlots[key];
-           return;
-         }
          for (const {prefix, limit} of limitChecks) {
            if (key.startsWith(prefix)) {
              const idx = parseInt(key.split('-')[1], 10);
              if (idx >= limit) {
-               delete newSlots[key]; // Evict overflowing item
+               // Evict overflowing item. For a more complete game we would drop them to ground, here we just delete.
+               delete newSlots[key]; 
              }
            }
          }
