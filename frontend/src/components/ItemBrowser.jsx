@@ -44,22 +44,24 @@ export function ItemBrowser() {
     { id: 'all', label: 'ALL' },
     { id: 'weapon', label: 'WEAPONS' },
     { id: 'material', label: 'MATERIALS' },
-    { id: 'consumable', label: 'SUPPLIES' },
-    { id: 'augment', label: 'GEAR' }
+    { id: 'consumable', label: 'CONSUMABLES' },
+    { id: 'augment', label: 'AUGMENTS' },
+    { id: 'shield', label: 'SHIELDS' },
   ];
 
   const filteredItems = useMemo(() => {
     const lowerQuery = searchQuery.toLowerCase().trim();
-    
+
     return items.filter(item => {
       // Category Filter
       if (activeCategory !== 'all') {
-        const matchesCategory = 
+        const matchesCategory =
           (activeCategory === 'weapon' && item.type === 'weapon') ||
           (activeCategory === 'material' && item.type === 'material') ||
-          (activeCategory === 'consumable' && (item.type === 'consumable' || item.type === 'ammo')) ||
-          (activeCategory === 'augment' && (item.type === 'augment' || item.type === 'shield'));
-        
+          (activeCategory === 'consumable' && item.type === 'consumable') ||
+          (activeCategory === 'augment' && item.type === 'augment') ||
+          (activeCategory === 'shield' && item.type === 'shield');
+
         if (!matchesCategory) return false;
       }
 
@@ -77,12 +79,12 @@ export function ItemBrowser() {
   const virtualizer = useVirtualizer({
     count: filteredItems.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 124, 
+    estimateSize: () => 124,
     overscan: 5,
   });
 
   return (
-    <div 
+    <div
       ref={setDropRef}
       className={`w-[340px] border-r border-white/5 flex flex-col z-20 backdrop-blur-3xl transition-colors ${isOver ? 'bg-red-950/90 border-red-500/50' : 'bg-[#05030a]/95'}`}
     >
@@ -90,16 +92,16 @@ export function ItemBrowser() {
         {isOver && <div className="absolute inset-0 bg-red-500/10 mix-blend-screen" />}
         <div className="flex justify-between items-center relative z-10 mb-5">
           <div>
-            <h2 className="text-lg tracking-[0.2em] font-semibold text-white/90 uppercase">Inventory Pool</h2>
+            <h2 className="text-lg tracking-[0.2em] font-semibold text-white/90 uppercase">Browse Items</h2>
             <p className="text-xs text-muted-foreground mt-1 tracking-wider uppercase">{filteredItems.length} Items Listed</p>
           </div>
           {isOver && <Trash2 className="w-6 h-6 text-red-400 animate-pulse" />}
         </div>
-        
+
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-          <Input 
-            placeholder="Search Registry..." 
+          <Input
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 bg-black/40 border-white/10 text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500/50"
@@ -113,8 +115,8 @@ export function ItemBrowser() {
               onClick={() => setActiveCategory(cat.id)}
               className={cn(
                 "px-3 py-1 rounded-full text-[10px] font-bold tracking-widest transition-all whitespace-nowrap border",
-                activeCategory === cat.id 
-                  ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-400" 
+                activeCategory === cat.id
+                  ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-400"
                   : "bg-white/5 border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-white/10"
               )}
             >
@@ -135,9 +137,9 @@ export function ItemBrowser() {
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = filteredItems[virtualItem.index];
             return (
-              <DraggableItemBrowserCard 
-                key={item.id} 
-                item={item} 
+              <DraggableItemBrowserCard
+                key={item.id}
+                item={item}
                 virtualStyle={{
                   position: 'absolute',
                   top: 0,

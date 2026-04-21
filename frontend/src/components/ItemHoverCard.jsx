@@ -12,7 +12,7 @@ const rarityColors = {
   legendary: "bg-orange-500/20 text-orange-300 border-orange-400/50"
 };
 
-export function ItemHoverCard({ item, children, equippedMods }) {
+export function ItemHoverCard({ item, children, equippedMods, zoomCompact = false }) {
   if (!item) return <>{children}</>;
 
   let totalWeight = item.weight || 0;
@@ -51,6 +51,8 @@ export function ItemHoverCard({ item, children, equippedMods }) {
     stats.push({ label: 'Limit', value: `${s.wlimit} kg`, icon: Briefcase });
   }
 
+  const isCompact = zoomCompact && ["augment", "shield", "consumable", "material", "key"].includes(item.type?.toLowerCase());
+
   return (
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
@@ -63,9 +65,16 @@ export function ItemHoverCard({ item, children, equippedMods }) {
       >
         <div className="p-4 border-b border-white/5 bg-gradient-to-br from-white/5 to-transparent">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-md bg-black/40 border border-white/10 flex items-center justify-center p-2 shrink-0">
+            <div className="w-16 h-16 rounded-md bg-black/40 border border-white/10 flex items-center justify-center p-2 shrink-0 overflow-hidden">
               {item.iconUrl ? (
-                <img src={item.iconUrl} alt={item.name} className="w-full h-full object-contain drop-shadow-md" />
+                <img 
+                  src={item.iconUrl} 
+                  alt={item.name} 
+                  className={cn(
+                    "w-full h-full object-contain drop-shadow-md transition-transform duration-300",
+                    isCompact ? "scale-[1.3]" : "scale-100"
+                  )} 
+                />
               ) : (
                 <div className="w-8 h-8 bg-zinc-700 rounded-sm" />
               )}

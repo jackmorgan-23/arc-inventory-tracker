@@ -85,7 +85,7 @@ const AmmoIcon = ({ type }) => {
   );
 }
 
-export function ItemCard({ item, isDragging, equippedMods }) {
+export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }) {
   if (!item) return null;
 
   const itemType = item.type?.toLowerCase() || '';
@@ -117,6 +117,8 @@ export function ItemCard({ item, isDragging, equippedMods }) {
     });
   }
 
+  const isCompact = zoomCompact && ["augment", "shield", "consumable", "material", "key"].includes(itemType);
+
   return (
     <div
       className={cn(
@@ -144,16 +146,31 @@ export function ItemCard({ item, isDragging, equippedMods }) {
       )}
 
       {/* Centered Item Icon & Glow */}
-      <div className="absolute inset-0 flex items-center justify-center p-3 pb-[28px] z-10 pointer-events-none">
+      <div className={cn(
+        "absolute inset-0 flex items-center justify-center z-10 pointer-events-none",
+        isCompact ? "p-1.5 pb-[24px]" : "p-3 pb-[28px]"
+      )}>
         {item.iconUrl ? (
           <img 
             src={item.iconUrl} 
             alt={item.name} 
-            className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-transform duration-300 relative z-10" 
+            className={cn(
+              "w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transition-transform duration-300 relative z-10",
+              isCompact 
+                ? "scale-[1.45] group-hover:scale-[1.53]" 
+                : "group-hover:scale-[1.03]"
+            )}
             fetchpriority="high"
           />
         ) : (
-          <IconComponent className="w-[60%] h-[60%] text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-[1.03] transition-transform duration-300 relative z-10" strokeWidth={1} style={{maxHeight:'60px'}} />
+          <IconComponent 
+            className={cn(
+              "text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-transform duration-300 relative z-10",
+              isCompact ? "w-[80%] h-[80%] group-hover:scale-[1.05]" : "w-[60%] h-[60%] group-hover:scale-[1.03]"
+            )} 
+            strokeWidth={1} 
+            style={{maxHeight: isCompact ? '80px' : '60px'}} 
+          />
         )}
       </div>
 

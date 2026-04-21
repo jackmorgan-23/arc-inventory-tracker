@@ -27,9 +27,9 @@ function InventorySlot({ id, instance, className }) {
       <div className="absolute top-0 right-0 w-[5px] h-[5px] border-t border-r border-white/20 opacity-50 z-10" />
       
       {instance ? (
-        <ItemHoverCard item={instance.item} equippedMods={instance.equippedMods}>
+        <ItemHoverCard item={instance.item} equippedMods={instance.equippedMods} zoomCompact={true}>
           <div ref={setDraggableRef} {...listeners} {...attributes} className="absolute inset-0 cursor-grab active:cursor-grabbing hover:brightness-110">
-            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} />
+            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} zoomCompact={true} />
           </div>
         </ItemHoverCard>
       ) : null}
