@@ -18,7 +18,7 @@ function InventorySlot({ id, instance, className }) {
     <div 
       ref={setDroppableRef} 
       className={cn(
-        "relative rounded-md border border-white/5 bg-[#0a0d14] overflow-hidden flex items-center justify-center transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]",
+        "relative rounded-[8px] border border-white/5 bg-[#0a0d14] overflow-hidden rounded-clip-fix flex items-center justify-center transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]",
         isOver && "border-cyan-400/60 ring-1 ring-cyan-400/30",
         className
       )}

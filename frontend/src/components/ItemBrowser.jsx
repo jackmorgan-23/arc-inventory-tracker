@@ -52,8 +52,8 @@ export function ItemBrowser() {
   const filteredItems = useMemo(() => {
     const lowerQuery = searchQuery.toLowerCase().trim();
 
-    return items.filter(item => {
-      // Category Filter
+    // First, filter by category
+    let results = items.filter(item => {
       if (activeCategory !== 'all') {
         const matchesCategory =
           (activeCategory === 'weapon' && item.type === 'weapon') ||
@@ -64,15 +64,46 @@ export function ItemBrowser() {
 
         if (!matchesCategory) return false;
       }
-
-      // Search Filter
-      if (!lowerQuery) return true;
-      return (
-        item.name.toLowerCase().includes(lowerQuery) ||
-        item.description.toLowerCase().includes(lowerQuery) ||
-        item.subType?.toLowerCase().includes(lowerQuery)
-      );
+      return true;
     });
+
+    // If no search query, return category-filtered results as-is
+    if (!lowerQuery) return results;
+
+    // Score and sort by relevance
+    const scored = [];
+    for (const item of results) {
+      const lowerName = item.name.toLowerCase();
+      const lowerDesc = item.description?.toLowerCase() ?? '';
+      const lowerSub = item.subType?.toLowerCase() ?? '';
+
+      let score = 0;
+      // Name matches (highest priority)
+      if (lowerName === lowerQuery) {
+        score = 100; // Exact match
+      } else if (lowerName.startsWith(lowerQuery)) {
+        score = 80;  // Prefix match (e.g. "ferro" → "ferro i")
+      } else if (lowerName.includes(lowerQuery)) {
+        score = 60;  // Substring match in name
+      }
+      // SubType match
+      if (lowerSub.includes(lowerQuery)) {
+        score = Math.max(score, 30);
+      }
+      // Description match (lowest priority — catches "Compatible with: Ferro")
+      if (lowerDesc.includes(lowerQuery)) {
+        score = Math.max(score, 10);
+      }
+
+      if (score > 0) {
+        scored.push({ item, score });
+      }
+    }
+
+    // Sort by score descending, then alphabetically by name for ties
+    scored.sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name));
+
+    return scored.map(s => s.item);
   }, [items, searchQuery, activeCategory]);
 
   // Virtualizer setup
@@ -103,16 +134,19 @@ export function ItemBrowser() {
           <Input
             placeholder="Search..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (e.target.value.trim()) setActiveCategory('all');
+            }}
             className="pl-9 bg-black/40 border-white/10 text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500/50"
           />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
           {categories.map(cat => (
             <button
               key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              onClick={() => setActiveCategory(prev => prev === cat.id && cat.id !== 'all' ? 'all' : cat.id)}
               className={cn(
                 "px-3 py-1 rounded-full text-[10px] font-bold tracking-widest transition-all whitespace-nowrap border",
                 activeCategory === cat.id

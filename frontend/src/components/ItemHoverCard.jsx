@@ -65,7 +65,7 @@ export function ItemHoverCard({ item, children, equippedMods, zoomCompact = fals
       >
         <div className="p-4 border-b border-white/5 bg-gradient-to-br from-white/5 to-transparent">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-md bg-black/40 border border-white/10 flex items-center justify-center p-2 shrink-0 overflow-hidden">
+            <div className="w-16 h-16 rounded-[8px] bg-black/40 border border-white/10 flex items-center justify-center p-2 shrink-0 overflow-hidden rounded-clip-fix">
               {item.iconUrl ? (
                 <img 
                   src={item.iconUrl} 

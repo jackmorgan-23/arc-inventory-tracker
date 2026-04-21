@@ -122,7 +122,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }
   return (
     <div
       className={cn(
-        "group relative rounded-[4px] overflow-hidden flex flex-col h-full w-full transition-all duration-150 z-0 border shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
+        "group relative rounded-[8px] overflow-hidden rounded-clip-fix flex flex-col h-full w-full transition-all duration-150 z-0 border shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
         isBlueprint ? "blueprint-grid" : "bg-gradient-to-b from-[#212936] to-[#11161d]",
         isDragging ? "opacity-30 scale-[0.98]" : "cursor-grab active:cursor-grabbing",
         isBlueprint ? "border-transparent" : rarityBorders[item.rarity || 'common']
@@ -148,7 +148,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }
       {/* Centered Item Icon & Glow */}
       <div className={cn(
         "absolute inset-0 flex items-center justify-center z-10 pointer-events-none",
-        isCompact ? "p-1.5 pb-[24px]" : "p-3 pb-[28px]"
+        isCompact ? "p-2 pb-[26px]" : "p-3 pb-[28px]"
       )}>
         {item.iconUrl ? (
           <img 
@@ -157,7 +157,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }
             className={cn(
               "w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transition-transform duration-300 relative z-10",
               isCompact 
-                ? "scale-[1.45] group-hover:scale-[1.53]" 
+                ? "scale-[1.15] group-hover:scale-[1.22]" 
                 : "group-hover:scale-[1.03]"
             )}
             fetchpriority="high"
@@ -175,7 +175,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }
       </div>
 
       {/* Solid Black Footer Bar */}
-      <div className="absolute bottom-0 left-0 w-full h-[24px] bg-[#080b0e] flex items-center justify-between px-1.5 z-20 border-t border-white/5">
+      <div className="absolute bottom-0 left-0 w-full h-[24px] bg-[#080b0e] flex items-center justify-between px-1.5 z-20 border-t border-white/5 rounded-b-[inherit]">
          
          {/* Left Side: Ammo or Quantity */}
          <div className="flex items-center">

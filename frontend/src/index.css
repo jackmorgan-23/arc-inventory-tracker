@@ -26,7 +26,7 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --radius: 0.625rem;
+    --radius: 8px; /* Increased from 0.625rem for a more premium look */
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -171,4 +171,19 @@
     transparent 70%
   );
   animation: blueprint-pulse 2.8s ease-in-out infinite;
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Global utility to prevent child elements from bleeding out of rounded corners */
+.rounded-clip-fix {
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black); /* Force Safari to clip correctly */
 }
