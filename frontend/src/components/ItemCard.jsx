@@ -2,12 +2,22 @@ import React from 'react';
 import * as Icons from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const rarityBGs = {
-  common: "bg-white",
-  uncommon: "bg-green-500",
-  rare: "bg-blue-500",
-  epic: "bg-purple-500",
-  legendary: "bg-orange-500"
+const rarityTopGlows = {
+  common:    "bg-[radial-gradient(ellipse_at_top,rgba(220,220,230,0.22)_0%,rgba(220,220,230,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(220,220,230,0.38)_0%,rgba(220,220,230,0)_75%)]",
+  uncommon:  "bg-[radial-gradient(ellipse_at_top,rgba(34,220,90,0.30)_0%,rgba(34,220,90,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(34,220,90,0.50)_0%,rgba(34,220,90,0)_75%)]",
+  rare:      "bg-[radial-gradient(ellipse_at_top,rgba(56,145,255,0.30)_0%,rgba(56,145,255,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(56,145,255,0.52)_0%,rgba(56,145,255,0)_75%)]",
+  epic:      "bg-[radial-gradient(ellipse_at_top,rgba(180,60,255,0.32)_0%,rgba(180,60,255,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(180,60,255,0.55)_0%,rgba(180,60,255,0)_75%)]",
+  elite:     "bg-[radial-gradient(ellipse_at_top,rgba(180,60,255,0.32)_0%,rgba(180,60,255,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(180,60,255,0.55)_0%,rgba(180,60,255,0)_75%)]",
+  legendary: "bg-[radial-gradient(ellipse_at_top,rgba(255,120,20,0.34)_0%,rgba(255,120,20,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(255,120,20,0.58)_0%,rgba(255,120,20,0)_75%)]"
+};
+
+const rarityBorders = {
+  common:    "border-white/15 hover:border-white/40",
+  uncommon:  "border-green-400/35 hover:border-green-300/65",
+  rare:      "border-blue-400/35 hover:border-blue-300/65",
+  epic:      "border-purple-400/40 hover:border-purple-300/70",
+  elite:     "border-purple-400/40 hover:border-purple-300/70",
+  legendary: "border-orange-400/40 hover:border-orange-300/70"
 };
 
 const AmmoIcon = ({ type }) => {
@@ -78,6 +88,9 @@ const AmmoIcon = ({ type }) => {
 export function ItemCard({ item, isDragging, equippedMods }) {
   if (!item) return null;
 
+  const itemType = item.type?.toLowerCase() || '';
+  const isBlueprint = item.subType === 'Blueprint';
+  const isWeapon = item.isWeapon === true || itemType === 'weapon';
   const IconComponent = Icons[item.icon] || Icons.Box;
 
   // Extract the weapon level / tier from the end of the item name (e.g. "Anvil II" -> "II")
@@ -107,30 +120,40 @@ export function ItemCard({ item, isDragging, equippedMods }) {
   return (
     <div
       className={cn(
-        "group relative rounded-[4px] overflow-hidden flex flex-col h-full w-full transition-all duration-150 z-0 border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
-        "bg-gradient-to-b from-[#212936] to-[#11161d]",
-        isDragging ? "opacity-30 scale-[0.98]" : "cursor-grab active:cursor-grabbing hover:border-white/40"
+        "group relative rounded-[4px] overflow-hidden flex flex-col h-full w-full transition-all duration-150 z-0 border shadow-[0_4px_12px_rgba(0,0,0,0.5)]",
+        isBlueprint ? "blueprint-grid" : "bg-gradient-to-b from-[#212936] to-[#11161d]",
+        isDragging ? "opacity-30 scale-[0.98]" : "cursor-grab active:cursor-grabbing",
+        isBlueprint ? "border-transparent" : rarityBorders[item.rarity || 'common']
       )}
     >
-      {/* Interactive hover overlay without CSS blurs - stops WebKit flickering */}
-      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors duration-200 z-20 pointer-events-none" />
+      {/* Interactive hover overlay - blueprint uses grid intensify, normal uses white wash */}
+      {isBlueprint ? (
+        <div className="blueprint-grid-overlay absolute inset-0 z-20 pointer-events-none transition-all duration-200" />
+      ) : (
+        <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors duration-200 z-20 pointer-events-none" />
+      )}
 
-      {/* Solid Rarity Corner Sweep - Bottom Left */}
-      <div 
-        className={cn("absolute bottom-0 left-0 w-[42px] h-[42px] rounded-tr-[100%] z-10", rarityBGs[item.rarity || 'common'])}
-      />
+      {/* Top Edge Rarity Spotlight (non-blueprint only) */}
+      {!isBlueprint && (
+        <div 
+          className={cn(
+            "absolute inset-0 z-0 pointer-events-none transition-all duration-300",
+            rarityTopGlows[item.rarity || 'common']
+          )}
+        />
+      )}
 
-      {/* Centered Item Icon */}
-      <div className="absolute inset-0 flex items-center justify-center p-3 pb-[28px] z-10">
+      {/* Centered Item Icon & Glow */}
+      <div className="absolute inset-0 flex items-center justify-center p-3 pb-[28px] z-10 pointer-events-none">
         {item.iconUrl ? (
           <img 
             src={item.iconUrl} 
             alt={item.name} 
-            className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-transform duration-300" 
+            className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] group-hover:scale-[1.03] transition-transform duration-300 relative z-10" 
             fetchpriority="high"
           />
         ) : (
-          <IconComponent className="w-[60%] h-[60%] text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-[1.03] transition-transform duration-300" strokeWidth={1} style={{maxHeight:'60px'}} />
+          <IconComponent className="w-[60%] h-[60%] text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-[1.03] transition-transform duration-300 relative z-10" strokeWidth={1} style={{maxHeight:'60px'}} />
         )}
       </div>
 
@@ -139,7 +162,7 @@ export function ItemCard({ item, isDragging, equippedMods }) {
          
          {/* Left Side: Ammo or Quantity */}
          <div className="flex items-center">
-           {item.type === 'weapon' ? (
+           {isWeapon ? (
              <>
                <AmmoIcon type={ammoType} />
                <span className={cn("text-[11px] font-semibold leading-none mt-[1px]", hasMagAugment ? "text-cyan-400" : "text-zinc-200")}>
@@ -153,7 +176,7 @@ export function ItemCard({ item, isDragging, equippedMods }) {
          
          {/* Right Side: Durability & Tier Badge */}
          <div className="flex items-center gap-[6px]">
-           {item.type === 'weapon' && (
+           {isWeapon && (
              <span className="text-[10px] text-zinc-400 font-sans tracking-wide leading-none mt-[1px]">
                100/100
              </span>

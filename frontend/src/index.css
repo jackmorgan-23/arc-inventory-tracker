@@ -99,3 +99,76 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Blueprint grid pattern for blueprint-type items */
+@keyframes blueprint-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.blueprint-grid {
+  --bp-bg: #060f20;
+  --bp-line-major: rgba(56, 149, 255, 0.18);
+  --bp-line-minor: rgba(56, 149, 255, 0.07);
+  background-color: var(--bp-bg);
+  background-image:
+    /* Central radial glow — simulates light shining on blueprint paper */
+    radial-gradient(ellipse at 50% 45%, rgba(30, 100, 255, 0.18) 0%, rgba(10, 40, 100, 0.10) 50%, transparent 75%),
+    /* Major grid lines */
+    linear-gradient(var(--bp-line-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-line-major) 1px, transparent 1px),
+    /* Minor grid lines */
+    linear-gradient(var(--bp-line-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-line-minor) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    40px 40px,
+    40px 40px,
+    10px 10px,
+    10px 10px;
+  /* Outer blueprint glow */
+  box-shadow:
+    0 0 0 1px rgba(56, 149, 255, 0.25),
+    0 0 12px rgba(30, 100, 255, 0.20),
+    0 0 28px rgba(30, 100, 255, 0.10),
+    inset 0 0 20px rgba(30, 100, 255, 0.06);
+  transition: box-shadow 0.25s ease, background-image 0.25s ease;
+}
+
+.blueprint-grid:hover {
+  --bp-line-major: rgba(56, 149, 255, 0.30);
+  --bp-line-minor: rgba(56, 149, 255, 0.12);
+  background-image:
+    radial-gradient(ellipse at 50% 40%, rgba(40, 120, 255, 0.28) 0%, rgba(10, 40, 100, 0.14) 55%, transparent 80%),
+    linear-gradient(var(--bp-line-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-line-major) 1px, transparent 1px),
+    linear-gradient(var(--bp-line-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bp-line-minor) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    40px 40px,
+    40px 40px,
+    10px 10px,
+    10px 10px;
+  box-shadow:
+    0 0 0 1px rgba(80, 170, 255, 0.45),
+    0 0 16px rgba(40, 120, 255, 0.35),
+    0 0 40px rgba(30, 100, 255, 0.18),
+    inset 0 0 28px rgba(30, 100, 255, 0.10);
+}
+
+/* Shimmer sweep overlay on hover */
+.blueprint-grid-overlay {
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.group:hover .blueprint-grid-overlay {
+  background: linear-gradient(
+    125deg,
+    transparent 30%,
+    rgba(100, 180, 255, 0.06) 50%,
+    transparent 70%
+  );
+  animation: blueprint-pulse 2.8s ease-in-out infinite;
+}
