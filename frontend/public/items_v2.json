@@ -239,117 +239,6 @@
     "recipe": null
   },
   {
-    "id": "agave_juice",
-    "name": "Agave Juice",
-    "type": "consumable",
-    "subType": "Quick Use",
-    "rarity": "common",
-    "weight": 0.2,
-    "value": 1800,
-    "iconUrl": null,
-    "stackLimit": 5,
-    "description": "A concoction that temporarily increases stamina regeneration, at a small initial cost to health.",
-    "modSlots": null,
-    "effects": {
-      "Duration": {
-        "value": "10s",
-        "da": "Varighed",
-        "de": "Dauer",
-        "en": "Duration",
-        "es": "Duración",
-        "fr": "Durée",
-        "he": "משך",
-        "hr": "Trajanje",
-        "it": "Durata",
-        "ja": "効果時間",
-        "kr": "지속 시간",
-        "no": "Varighet",
-        "pl": "Czas trwania",
-        "pt": "Duração",
-        "pt-BR": "Duração",
-        "ru": "Длительность",
-        "sr": "Trajanje",
-        "tr": "Süre",
-        "uk": "Тривалість",
-        "zh-CN": "持续时间",
-        "zh-TW": "持續時間"
-      },
-      "Health Cost": {
-        "value": "5",
-        "da": "Helbredsomkostning",
-        "de": "Gesundheitskosten",
-        "en": "Health Cost",
-        "es": "Coste de salud",
-        "fr": "Coût en santé",
-        "he": "עלות בריאות",
-        "hr": "Trošak zdravlja",
-        "it": "Costo salute",
-        "ja": "消費体力",
-        "kr": "체력 소모",
-        "no": "Helsekostnad",
-        "pl": "Koszt zdrowia",
-        "pt": "Custo de Saúde",
-        "pt-BR": "Custo de Saúde",
-        "ru": "Затраты здоровья",
-        "sr": "Cena zdravlja",
-        "tr": "Sağlık Bedeli",
-        "uk": "Витрата здоров'я",
-        "zh-CN": "生命值消耗",
-        "zh-TW": "生命值消耗"
-      },
-      "Stamina Regeneration": {
-        "value": "5/s",
-        "da": "Regenerering af udholdenhed",
-        "de": "Ausdauerregeneration",
-        "en": "Stamina Regeneration",
-        "es": "Regeneración de resistencia",
-        "fr": "Régénération de l'endurance",
-        "he": "התחדשות סיבולת",
-        "hr": "Regeneracija izdržljivosti",
-        "it": "Rigenerazione resistenza",
-        "ja": "スタミナ回復速度",
-        "kr": "스태미나 재생",
-        "no": "Utholdenhetsregenerering",
-        "pl": "Regeneracja wytrzymałości",
-        "pt": "Regeneração de Estamina",
-        "pt-BR": "Regeneração de Estamina",
-        "ru": "Восстановление выносливости",
-        "sr": "Regeneracija izdržljivosti",
-        "tr": "Dayanıklılık Yenilenmesi",
-        "uk": "Відновлення витривалості",
-        "zh-CN": "耐力恢复",
-        "zh-TW": "耐力回復"
-      },
-      "Use Time": {
-        "value": "1s",
-        "da": "Brugstid",
-        "de": "Benutzungsdauer",
-        "en": "Use Time",
-        "es": "Tiempo de uso",
-        "fr": "Temps d'utilisation",
-        "he": "זמן שימוש",
-        "hr": "Vrijeme korištenja",
-        "it": "Tempo di utilizzo",
-        "ja": "使用時間",
-        "kr": "사용 시간",
-        "no": "Brukstid",
-        "pl": "Czas użycia",
-        "pt": "Tempo de Uso",
-        "pt-BR": "Tempo de Uso",
-        "ru": "Время применения",
-        "sr": "Vreme upotrebe",
-        "tr": "Kullanım Süresi",
-        "uk": "Час використання",
-        "zh-CN": "使用时间",
-        "zh-TW": "使用時間"
-      }
-    },
-    "recipe": {
-      "agave": 1,
-      "empty_wine_bottle": 1
-    }
-  },
-  {
     "id": "air_freshener",
     "name": "Air Freshener",
     "type": "material",
@@ -375,21 +264,6 @@
     "iconUrl": "/assets/items/alarm_clock.png",
     "stackLimit": 3,
     "description": "Can be recycled into crafting materials.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "alien_duck",
-    "name": "Alien Duck",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "uncommon",
-    "weight": 0.3,
-    "value": 1000,
-    "iconUrl": null,
-    "stackLimit": 15,
-    "description": "A long, long way from home. Can be thrown to create noise.",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -2631,21 +2505,6 @@
         "zh-TW": "降低換彈時間"
       }
     },
-    "recipe": null
-  },
-  {
-    "id": "assessor_matrix",
-    "name": "Assessor Matrix",
-    "type": "material",
-    "subType": "Recyclable",
-    "rarity": "epic",
-    "weight": 0.5,
-    "value": 5000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
     "recipe": null
   },
   {
@@ -6035,85 +5894,6 @@
     "recipe": null
   },
   {
-    "id": "canto_blueprint",
-    "name": "Canto Blueprint",
-    "type": "material",
-    "subType": "Blueprint",
-    "rarity": "common",
-    "weight": 0,
-    "value": 5000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Fully automatic submachine gun with a larger caliber.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "canto_i",
-    "name": "Canto I",
-    "type": "material",
-    "subType": "SMG",
-    "rarity": "legendary",
-    "weight": 6.5,
-    "value": 7000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Fully automatic submachine gun with a larger caliber.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": {
-      "advanced_mechanical_components": 2,
-      "magnet": 5,
-      "medium_gun_parts": 3
-    }
-  },
-  {
-    "id": "canto_ii",
-    "name": "Canto II",
-    "type": "material",
-    "subType": "SMG",
-    "rarity": "legendary",
-    "weight": 6.5,
-    "value": 10000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Fully automatic submachine gun with a larger caliber.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "canto_iii",
-    "name": "Canto III",
-    "type": "material",
-    "subType": "SMG",
-    "rarity": "legendary",
-    "weight": 6.5,
-    "value": 13000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Fully automatic submachine gun with a larger caliber.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "canto_iv",
-    "name": "Canto IV",
-    "type": "material",
-    "subType": "SMG",
-    "rarity": "legendary",
-    "weight": 6.5,
-    "value": 17000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Fully automatic submachine gun with a larger caliber.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "cat_bed",
     "name": "Cat Bed",
     "type": "material",
@@ -6810,21 +6590,6 @@
     "iconUrl": "/assets/items/combat_mk3_flanking.png",
     "stackLimit": 1,
     "description": "An improved version of the Combat II augment. Designed for flanking maneuvers with enhanced mobility.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "comet_igniter",
-    "name": "Comet Igniter",
-    "type": "material",
-    "subType": "Recyclable",
-    "rarity": "rare",
-    "weight": 1,
-    "value": 1000,
-    "iconUrl": null,
-    "stackLimit": 3,
-    "description": "Can be recycled into crafting materials.",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -7720,21 +7485,6 @@
     "recipe": null
   },
   {
-    "id": "dodgers_note",
-    "name": "Dodger's Note",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "dog_collar",
     "name": "Dog Collar",
     "type": "material",
@@ -7745,55 +7495,6 @@
     "iconUrl": "/assets/items/dog_collar.png",
     "stackLimit": 3,
     "description": "After all this time, you can still smell the goodness.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "dolabra",
-    "name": "Dolabra",
-    "type": "weapon",
-    "subType": "Shotgun",
-    "rarity": "legendary",
-    "weight": 8,
-    "value": 27500,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "An experimental weapon that can either fire a wide short range blast, or be focused to fire a tight medium range beam of heat.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": {
-      "magnetic_accelerator": 3,
-      "shredder_gyro": 3,
-      "vaporizer_regulator": 2
-    }
-  },
-  {
-    "id": "dolabra_blueprint",
-    "name": "Dolabra Blueprint",
-    "type": "material",
-    "subType": "Blueprint",
-    "rarity": "common",
-    "weight": 0,
-    "value": 5000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "An experimental weapon that can either fire a wide short range blast, or be focused to fire a tight medium range beam of heat.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "doodly_duck",
-    "name": "Doodly Duck",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "rare",
-    "weight": 0.3,
-    "value": 3000,
-    "iconUrl": null,
-    "stackLimit": 15,
-    "description": "Everything is a canvas to a creative child. Can be thrown to create noise.",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -7862,21 +7563,6 @@
     "recipe": {
       "fabric": 14
     }
-  },
-  {
-    "id": "dusty_film_reel",
-    "name": "Dusty Film Reel",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "An old film reel covered in dust. Might have been something worth watching.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
   },
   {
     "id": "electrical_components",
@@ -8052,21 +7738,6 @@
     "iconUrl": "/assets/items/equalizer.png",
     "stackLimit": 1,
     "description": "A high capacity experimental beam rifle.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "espresso_machine_parts",
-    "name": "Espresso Machine Parts",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -9844,21 +9515,6 @@
     }
   },
   {
-    "id": "firefly_burner",
-    "name": "Firefly Burner",
-    "type": "material",
-    "subType": "Recyclable",
-    "rarity": "rare",
-    "weight": 0.75,
-    "value": 1000,
-    "iconUrl": null,
-    "stackLimit": 3,
-    "description": "Can be recycled into crafting materials.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "fireworks_box",
     "name": "Fireworks Box",
     "type": "consumable",
@@ -10000,21 +9656,6 @@
       "air_freshener": 1,
       "fireball_burner": 1
     }
-  },
-  {
-    "id": "flashy_duck",
-    "name": "Flashy Duck",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "rare",
-    "weight": 0.3,
-    "value": 3000,
-    "iconUrl": null,
-    "stackLimit": 15,
-    "description": "Lovingly hand-painted by someone of great talent—clearly. Any guesses who? Can be thrown to create noise.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
   },
   {
     "id": "flow_controller",
@@ -14559,21 +14200,6 @@
     "recipe": null
   },
   {
-    "id": "library_book",
-    "name": "Book",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "lidar_scanner",
     "name": "Lidar Scanner",
     "type": "material",
@@ -15643,21 +15269,6 @@
     "recipe": null
   },
   {
-    "id": "major_aivas_mementos",
-    "name": "Major Aiva's Mementos",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "major_aivas_patch",
     "name": "Major Aiva's Patch",
     "type": "material",
@@ -15967,21 +15578,6 @@
       "mechanical_components": 2,
       "steel_spring": 2
     }
-  },
-  {
-    "id": "moisture_meter",
-    "name": "Moisture Meter",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.25,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "A quest item that must be delivered to Tian Wen to complete the Unexpected Initiative quest.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
   },
   {
     "id": "moss",
@@ -16551,36 +16147,6 @@
     "recipe": null
   },
   {
-    "id": "nutrient_meter",
-    "name": "Nutrient Meter",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.25,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "A quest item that must be delivered to Tian Wen to complete the Unexpected Initiative quest.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "official_shutdown_documentation",
-    "name": "Official Shutdown Documentation",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "oil",
     "name": "Oil",
     "type": "material",
@@ -16591,21 +16157,6 @@
     "iconUrl": "/assets/items/oil.png",
     "stackLimit": 15,
     "description": "Used to craft weapons and explosives. Can be recycled into chemicals. Used to craft: Renegade, Explosive Compound, Blaze Grenade",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "old_world_books",
-    "name": "Old World Books",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.25,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "The past survives in fragments, often dull or ordinary, yet priceless to the right person.",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -17920,21 +17471,6 @@
     "recipe": null
   },
   {
-    "id": "possibly_toxic_plant",
-    "name": "Possibly Toxic Plant",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "poster_of_natural_wonders",
     "name": "Poster of Natural Wonders",
     "type": "material",
@@ -18038,21 +17574,6 @@
     "iconUrl": "/assets/items/processor.png",
     "stackLimit": 5,
     "description": "Used in crafting. Used to craft: Tactical Mk. 3 (Defensive), Combat Mk. 3 (Flanking), Combat Mk. 3 (Aggressive), Looting Mk. 3 (Cautious), Tactical Mk. 3 (Healing)",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "project_heartwood_blueprints",
-    "name": "Project Heartwood Blueprints",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "Faded blueprints for something called Project Heartwood. Whatever it was, it never got built.",
     "modSlots": null,
     "effects": null,
     "recipe": null
@@ -20274,36 +19795,6 @@
     "recipe": null
   },
   {
-    "id": "scout_patrol_note",
-    "name": "Scout Patrol Note",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "secret_meeting_info",
-    "name": "Secret Meeting Info",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "seeker_grenade",
     "name": "Seeker Grenade",
     "type": "consumable",
@@ -21952,21 +21443,6 @@
     "recipe": null
   },
   {
-    "id": "stack_of_movie_tapes",
-    "name": "Stack of Movie Tapes",
-    "type": "material",
-    "subType": "Trinket",
-    "rarity": "common",
-    "weight": 0.5,
-    "value": 0,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
     "id": "statuette",
     "name": "Statuette",
     "type": "material",
@@ -22995,40 +22471,6 @@
         "zh-TW": "降低換彈時間"
       }
     },
-    "recipe": null
-  },
-  {
-    "id": "surge_coil",
-    "name": "Surge Coil",
-    "type": "consumable",
-    "subType": "Quick Use",
-    "rarity": "uncommon",
-    "weight": 0,
-    "value": 2100,
-    "iconUrl": null,
-    "stackLimit": 3,
-    "description": "A deployable device that periodically electrifies the area around itself and briefly stuns anything caught within it.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": {
-      "electrical_components": 1,
-      "hornet_driver": 1,
-      "sensors": 1
-    }
-  },
-  {
-    "id": "surge_coil_blueprint",
-    "name": "Surge Coil Blueprint",
-    "type": "material",
-    "subType": "Blueprint",
-    "rarity": "common",
-    "weight": 0,
-    "value": 5000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "A deployable device that periodically electrifies the area around itself and briefly stuns anything caught within it.",
-    "modSlots": null,
-    "effects": null,
     "recipe": null
   },
   {
@@ -25539,21 +24981,6 @@
     "iconUrl": "/assets/items/unusable_weapon.png",
     "stackLimit": 3,
     "description": "Can be recycled into crafting materials.",
-    "modSlots": null,
-    "effects": null,
-    "recipe": null
-  },
-  {
-    "id": "vaporizer_regulator",
-    "name": "Vaporizer Regulator",
-    "type": "material",
-    "subType": "Recyclable",
-    "rarity": "epic",
-    "weight": 0.5,
-    "value": 6000,
-    "iconUrl": null,
-    "stackLimit": 1,
-    "description": "",
     "modSlots": null,
     "effects": null,
     "recipe": null

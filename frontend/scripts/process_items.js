@@ -90,6 +90,10 @@ async function processData() {
             }
         }
 
+        if (!localIconPath) {
+            return; // Skip items without images
+        }
+
         const item = {
             id: data.id,
             name: data.name.en,

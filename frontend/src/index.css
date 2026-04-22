@@ -187,3 +187,14 @@
   isolation: isolate;
   -webkit-mask-image: -webkit-radial-gradient(white, black); /* Force Safari to clip correctly */
 }
+
+/* Branding cursor blink animation */
+@keyframes hard-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+.cursor-blink {
+    animation: hard-blink 1s step-end infinite;
+    font-weight: bold;
+    color: #ffffff;
+}
