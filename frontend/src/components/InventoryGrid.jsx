@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 import { Shield } from 'lucide-react';
 import { ItemHoverCard } from './ItemHoverCard';
 
-function InventorySlot({ id, instance, className }) {
+function InventorySlot({ id, instance, className, iconOnly = false }) {
   const { isOver, setNodeRef: setDroppableRef } = useDroppable({ id });
 
   const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
@@ -29,7 +29,7 @@ function InventorySlot({ id, instance, className }) {
       {instance ? (
         <ItemHoverCard item={instance.item} equippedMods={instance.equippedMods} zoomCompact={true}>
           <div ref={setDraggableRef} {...listeners} {...attributes} className="absolute inset-0 cursor-grab active:cursor-grabbing hover:brightness-110">
-            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} zoomCompact={true} />
+            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} zoomCompact={true} iconOnly={iconOnly} />
           </div>
         </ItemHoverCard>
       ) : null}
@@ -103,6 +103,7 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
                        id={`weapon-0-att-${modKey}`} 
                        instance={slots['weapon-0']?.equippedMods?.[modKey]} 
                        className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
+                       iconOnly={true}
                      />
                    ))}
                  </div>
@@ -117,6 +118,7 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
                        id={`weapon-1-att-${modKey}`} 
                        instance={slots['weapon-1']?.equippedMods?.[modKey]} 
                        className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
+                       iconOnly={true}
                      />
                    ))}
                  </div>

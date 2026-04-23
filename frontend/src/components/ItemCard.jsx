@@ -85,13 +85,36 @@ const AmmoIcon = ({ type }) => {
   );
 }
 
-export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false }) {
+export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, iconOnly = false }) {
   if (!item) return null;
 
   const itemType = item.type?.toLowerCase() || '';
   const isBlueprint = item.subType === 'Blueprint';
   const isWeapon = item.isWeapon === true || itemType === 'weapon';
   const IconComponent = Icons[item.icon] || Icons.Box;
+
+  if (iconOnly) {
+    return (
+      <div className={cn(
+        "w-full h-full flex items-center justify-center p-1",
+        isDragging ? "opacity-30 scale-[0.98]" : "cursor-grab active:cursor-grabbing hover:scale-[1.05] transition-transform"
+      )}>
+        {item.iconUrl ? (
+          <img 
+            src={item.iconUrl} 
+            alt={item.name} 
+            className="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+            fetchpriority="high"
+          />
+        ) : (
+          <IconComponent 
+            className="text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] w-4/5 h-4/5" 
+            strokeWidth={1.5} 
+          />
+        )}
+      </div>
+    );
+  }
 
   // Extract the weapon level / tier from the end of the item name (e.g. "Anvil II" -> "II")
   const tierMatch = item.name.match(/\s(I|II|III|IV|V)$/);
