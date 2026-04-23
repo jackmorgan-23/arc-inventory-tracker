@@ -40,6 +40,8 @@ async function processData() {
     const augmentsApi = JSON.parse(fs.readFileSync(AUGMENTS_API_FILE, 'utf8'));
     const augmentStatsMap = {};
 
+    const augmentOverrides = JSON.parse(fs.readFileSync(path.join(__dirname, 'augment_overrides.json'), 'utf8'));
+
     Object.values(augmentsApi.query.pages).forEach(page => {
         if (!page.revisions) return;
         const text = page.revisions[0]['*'];
@@ -47,7 +49,23 @@ async function processData() {
         // Map "Combat Mk. 1" to "combat_mk1"
         const id = page.title.toLowerCase().replace(/\s/g, '_').replace(/\./g, '');
         augmentStatsMap[id] = stats;
-        // console.log(`Mapped stats for ${id}`);
+        
+        if (augmentOverrides[page.title]) {
+            augmentStatsMap[id] = {
+                ...stats,
+                ...augmentOverrides[page.title]
+            };
+        }
+    }); // Close the first forEach over augmentsApi.query.pages
+
+    Object.keys(augmentOverrides).forEach(title => {
+        // Some augments have parens like "(Aggressive)", wait let's see normalize:
+        const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const id = normalize(title);
+        augmentStatsMap[id] = {
+            ...(augmentStatsMap[id] || {}),
+            ...augmentOverrides[title]
+        };
     });
 
     console.log('--- Phase 3: Processing Items ---');

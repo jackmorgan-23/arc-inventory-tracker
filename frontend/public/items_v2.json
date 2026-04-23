@@ -6044,7 +6044,12 @@
       "backpack": 16,
       "quickUse": 4,
       "safePocket": 1,
-      "wlimit": 45
+      "wlimit": 45,
+      "allowedShields": [
+        "Light",
+        "Medium"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -6156,6 +6161,20 @@
     "recipe": {
       "electrical_components": 2,
       "magnet": 3
+    },
+    "augmentStats": {
+      "backpack": 18,
+      "quickUse": 4,
+      "safePocket": 1,
+      "wlimit": 55,
+      "allowedShields": [
+        "Light",
+        "Medium",
+        "Heavy"
+      ],
+      "augmentSlots": [
+        "grenade"
+      ]
     }
   },
   {
@@ -6359,6 +6378,21 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 18,
+      "quickUse": 4,
+      "safePocket": 1,
+      "wlimit": 65,
+      "allowedShields": [
+        "Light",
+        "Medium",
+        "Heavy"
+      ],
+      "augmentSlots": [
+        "grenade",
+        "grenade"
+      ]
     }
   },
   {
@@ -6577,6 +6611,20 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 20,
+      "quickUse": 5,
+      "safePocket": 2,
+      "wlimit": 60,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": [
+        "deployable",
+        "deployable",
+        "deployable"
+      ]
     }
   },
   {
@@ -9746,7 +9794,11 @@
       "backpack": 14,
       "quickUse": 4,
       "safePocket": 0,
-      "wlimit": 35
+      "wlimit": 35,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -14737,7 +14789,11 @@
       "backpack": 18,
       "quickUse": 4,
       "safePocket": 1,
-      "wlimit": 50
+      "wlimit": 50,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -14826,6 +14882,20 @@
     "recipe": {
       "electrical_components": 2,
       "magnet": 3
+    },
+    "augmentStats": {
+      "backpack": 22,
+      "quickUse": 4,
+      "safePocket": 2,
+      "wlimit": 60,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": [
+        "trinket",
+        "trinket",
+        "trinket"
+      ]
     }
   },
   {
@@ -14914,6 +14984,16 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 24,
+      "quickUse": 5,
+      "safePocket": 2,
+      "wlimit": 70,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -15002,6 +15082,21 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 18,
+      "quickUse": 4,
+      "safePocket": 1,
+      "wlimit": 65,
+      "allowedShields": [
+        "Light",
+        "Medium",
+        "Heavy"
+      ],
+      "augmentSlots": [
+        "trinket",
+        "trinket"
+      ]
     }
   },
   {
@@ -15105,6 +15200,19 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 20,
+      "quickUse": 5,
+      "safePocket": 3,
+      "wlimit": 80,
+      "allowedShields": [
+        "Light",
+        "Medium"
+      ],
+      "augmentSlots": [
+        "deployable"
+      ]
     }
   },
   {
@@ -22674,7 +22782,12 @@
       "backpack": 15,
       "quickUse": 5,
       "safePocket": 1,
-      "wlimit": 40
+      "wlimit": 40,
+      "allowedShields": [
+        "Light",
+        "Medium"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -22763,6 +22876,19 @@
     "recipe": {
       "electrical_components": 2,
       "magnet": 3
+    },
+    "augmentStats": {
+      "backpack": 17,
+      "quickUse": 5,
+      "safePocket": 1,
+      "wlimit": 45,
+      "allowedShields": [
+        "Light",
+        "Medium"
+      ],
+      "augmentSlots": [
+        "deployable"
+      ]
     }
   },
   {
@@ -22851,6 +22977,18 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 20,
+      "quickUse": 5,
+      "safePocket": 1,
+      "wlimit": 60,
+      "allowedShields": [
+        "Light",
+        "Medium",
+        "Heavy"
+      ],
+      "augmentSlots": []
     }
   },
   {
@@ -22954,6 +23092,21 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 16,
+      "quickUse": 4,
+      "safePocket": 3,
+      "wlimit": 55,
+      "allowedShields": [
+        "Light",
+        "Medium"
+      ],
+      "augmentSlots": [
+        "healing",
+        "healing",
+        "healing"
+      ]
     }
   },
   {
@@ -23057,6 +23210,16 @@
     "recipe": {
       "advanced_electrical_components": 2,
       "processor": 3
+    },
+    "augmentStats": {
+      "backpack": 16,
+      "quickUse": 5,
+      "safePocket": 2,
+      "wlimit": 65,
+      "allowedShields": [
+        "Light"
+      ],
+      "augmentSlots": []
     }
   },
   {

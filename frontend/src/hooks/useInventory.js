@@ -28,7 +28,26 @@ export const DEFAULT_AUGMENT_STATS = {
   quickUse: 4,
   safePocket: 0,
   wlimit: 35.0,
-  name: "Naked Backpack"
+  name: "Naked Backpack",
+  allowedShields: ["Light"],
+  augmentSlots: []
+};
+
+const isValidForAugmentSlot = (item, allowedType) => {
+  if (!item) return false;
+  const itemName = item.name || "";
+  const itemSubType = item.subType || "";
+  
+  if (allowedType === 'grenade') {
+     return ["Grenade", "Mine", "Showstopper", "Deadline", "Wolfpack", "Trailblazer", "Firecracker"].some(word => itemName.includes(word));
+  } else if (allowedType === 'deployable') {
+     return ["Barricade Kit", "Door Blocker", "Zipline", "Surge Coil", "Trap", "Noisemaker", "Flare", "Binoculars", "Flame Spray", "Guitar", "Recorder", "Shaker", "Snap Hook", "Cloak"].some(word => itemName.includes(word));
+  } else if (allowedType === 'healing') {
+     return ["Bandage", "Defibrillator", "Vita", "Agave", "Moss", "Mushroom", "Fruit Mix", "Adrenaline", "Apricot", "Lemon", "Olives", "Prickly Pear", "Pasta", "Tuna"].some(word => itemName.includes(word));
+  } else if (allowedType === 'trinket') {
+     return itemSubType === 'Trinket';
+  }
+  return false;
 };
 
 export function useInventory() {
@@ -70,10 +89,11 @@ export function useInventory() {
 
   const config = useMemo(() => ({
     ...BASE_CONFIG,
-    backpack: augmentStats.backpack,
-    quickUse: augmentStats.quickUse,
-    safePocket: augmentStats.safePocket,
-    wlimit: augmentStats.wlimit
+    backpack: augmentStats.backpack ?? DEFAULT_AUGMENT_STATS.backpack,
+    quickUse: augmentStats.quickUse ?? DEFAULT_AUGMENT_STATS.quickUse,
+    safePocket: augmentStats.safePocket ?? DEFAULT_AUGMENT_STATS.safePocket,
+    wlimit: augmentStats.wlimit ?? DEFAULT_AUGMENT_STATS.wlimit,
+    augmentSlots: augmentStats.augmentSlots || []
   }), [augmentStats]);
 
   const handleDragStart = (event) => {
@@ -150,9 +170,37 @@ export function useInventory() {
           console.warn('Only augments can be placed in the augment slot.');
           return prev;
         }
-        if (targetSlot === 'equipment-1' && targetItemType !== 'shield') {
-          console.warn('Only shields can be placed in the shield slot.');
-          return prev;
+        if (targetSlot === 'equipment-1') {
+          if (targetItemType !== 'shield') {
+            console.warn('Only shields can be placed in the shield slot.');
+            return prev;
+          }
+          const equippedAugment = [prev['equipment-0'], prev['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
+          const augStats = equippedAugment?.augmentStats || DEFAULT_AUGMENT_STATS;
+          const allowedShields = augStats.allowedShields || ["Light", "Medium", "Heavy"];
+          const shieldName = activeItemData?.name || "";
+          const isAllowed = allowedShields.some(shieldType => shieldName.includes(shieldType));
+          if (!isAllowed) {
+            console.warn(`${shieldName} is not compatible with the equipped augment.`);
+            return prev;
+          }
+        }
+
+        if (targetSlot.startsWith('augmentSlot-')) {
+          const slotIdx = parseInt(targetSlot.split('-')[1], 10);
+          const equippedAugment = [prev['equipment-0'], prev['equipment-1']].find(s => s?.item?.type === 'augment')?.item;
+          const augStats = equippedAugment?.augmentStats || DEFAULT_AUGMENT_STATS;
+          const allowedType = (augStats.augmentSlots || [])[slotIdx];
+          
+          if (!allowedType) {
+            console.warn('This augment slot does not exist.');
+            return prev;
+          }
+
+          if (!isValidForAugmentSlot(activeItemData, allowedType)) {
+            console.warn(`Item "${activeItemData?.name}" is not allowed in a ${allowedType} slot.`);
+            return prev;
+          }
         }
 
         if (targetSlot.startsWith('quickUse')) {
@@ -240,8 +288,34 @@ export function useInventory() {
       const limitChecks = [
         { prefix: 'backpack-', limit: newAugStats.backpack },
         { prefix: 'quickUse-', limit: newAugStats.quickUse },
-        { prefix: 'safePocket-', limit: newAugStats.safePocket }
+        { prefix: 'safePocket-', limit: newAugStats.safePocket },
+        { prefix: 'augmentSlot-', limit: (newAugStats.augmentSlots || []).length }
       ];
+
+      // Check for shield compatibility after dropping an augment
+      const allowedShields = newAugStats.allowedShields || ["Light", "Medium", "Heavy"];
+      const equippedShieldSlotId = ['equipment-0', 'equipment-1'].find(id => newSlots[id]?.item?.type === 'shield');
+      if (equippedShieldSlotId) {
+        const shieldName = newSlots[equippedShieldSlotId].item.name;
+        const isAllowed = allowedShields.some(shieldType => shieldName.includes(shieldType));
+        if (!isAllowed) {
+          delete newSlots[equippedShieldSlotId];
+        }
+      }
+
+      // Check for augmentSlot compatibility after dropping an augment
+      const augmentSlotsDef = newAugStats.augmentSlots || [];
+      Object.keys(newSlots).forEach(key => {
+        if (key.startsWith('augmentSlot-')) {
+          const idx = parseInt(key.split('-')[1], 10);
+          const allowedType = augmentSlotsDef[idx];
+          if (!allowedType) return; // handled by limitChecks below
+          
+          if (!isValidForAugmentSlot(newSlots[key].item, allowedType)) {
+            delete newSlots[key];
+          }
+        }
+      });
 
       // Clean up undefined keys and enforce boundary limits
       Object.keys(newSlots).forEach(key => {

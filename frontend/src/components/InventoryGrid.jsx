@@ -166,6 +166,19 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
               </div>
             </div>
           </div>
+
+          {config.augmentSlots && config.augmentSlots.length > 0 && (
+            <div>
+              <SectionHeader title="Augment Slots" count={Object.keys(slots).filter(k => k.startsWith('augmentSlot')).length} total={config.augmentSlots.length} />
+              <div className="bg-[#121620]/80 rounded-xl p-3 border border-white/5 shadow-lg backdrop-blur-md w-fit">
+                <div className="flex gap-[6px] flex-wrap max-w-xs">
+                   {config.augmentSlots.map((type, i) => (
+                     <InventorySlot key={`augmentSlot-${i}`} id={`augmentSlot-${i}`} instance={slots[`augmentSlot-${i}`]} className="w-[88px] h-20" updateQuantity={updateQuantity} removeItem={removeItem} />
+                   ))}
+                </div>
+              </div>
+            </div>
+          )}
           
           <div>
             <SectionHeader title="Safe Pocket" count={safePocketCount} total={config.safePocket} />
