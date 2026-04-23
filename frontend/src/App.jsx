@@ -9,6 +9,7 @@ import { ItemCard } from './components/ItemCard';
 import { LoginDialog } from './components/LoginDialog';
 import NeonBackground from './components/NeonBackground';
 import { Shield, LogIn, Lock } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from './components/ui/tooltip';
 
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 
@@ -32,22 +33,40 @@ function App() {
             {/* Top Game Navbar */}
             <header className="h-16 flex items-center justify-between px-10 bg-[#0a0d14]/60 backdrop-blur-md border-b border-white/5 z-10 sticky top-0">
               <div className="flex items-center gap-10">
-                {['Loadout 1', 'Loadout 2', 'Loadout 3'].map((label, i) => (
-                  <button
-                    key={label}
-                    disabled={!auth.isAuthenticated}
-                    className={`tracking-[0.2em] py-5 text-sm uppercase transition-colors ${
-                      !auth.isAuthenticated
-                        ? 'text-white/20 cursor-not-allowed flex items-center gap-1.5'
-                        : i === 0
-                          ? 'text-white font-bold border-b-2 border-white'
-                          : 'text-white/50 hover:text-white'
-                    }`}
-                  >
-                    {!auth.isAuthenticated && <Lock className="w-3 h-3" />}
-                    {label}
-                  </button>
-                ))}
+                {['Loadout 1', 'Loadout 2', 'Loadout 3'].map((label, i) => {
+                  const button = (
+                    <button
+                      disabled={!auth.isAuthenticated}
+                      className={`tracking-[0.2em] py-5 text-sm uppercase transition-colors ${
+                        !auth.isAuthenticated
+                          ? 'text-white/20 flex items-center gap-1.5'
+                          : i === 0
+                            ? 'text-white font-bold border-b-2 border-white'
+                            : 'text-white/50 hover:text-white'
+                      }`}
+                    >
+                      {!auth.isAuthenticated && <Lock className="w-3 h-3" />}
+                      {label}
+                    </button>
+                  );
+
+                  return !auth.isAuthenticated ? (
+                    <Tooltip key={label} delayDuration={100}>
+                      <TooltipTrigger asChild>
+                        <span className="cursor-not-allowed">
+                          {React.cloneElement(button, { className: button.props.className + " pointer-events-none" })}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-black/90 border border-white/10 text-white shadow-2xl backdrop-blur-md">
+                        <p>Login to use this feature</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <React.Fragment key={label}>
+                      {button}
+                    </React.Fragment>
+                  );
+                })}
               </div>
               <div className="flex items-center font-sans">
                 {/* Login / Logout */}
