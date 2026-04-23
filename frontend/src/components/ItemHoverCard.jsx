@@ -1,6 +1,6 @@
 import React from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
-import { Tag, MapPin, Briefcase, Coins, Recycle } from 'lucide-react';
+import { Tag, MapPin, Briefcase, Coins, Recycle, Shield } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const rarityColors = {
@@ -49,6 +49,15 @@ export function ItemHoverCard({ item, children, equippedMods, zoomCompact = fals
     stats.push({ label: 'Backpack', value: `${s.backpack} Slots`, icon: Tag });
     stats.push({ label: 'Quick Use', value: `${s.quickUse} Slots`, icon: Tag });
     stats.push({ label: 'Limit', value: `${s.wlimit} kg`, icon: Briefcase });
+  }
+
+  const isWeapon = item.isWeapon === true || item.type?.toLowerCase() === 'weapon';
+  if (isWeapon) {
+    stats.push({
+      label: 'Durability',
+      value: '100/100',
+      icon: Shield
+    });
   }
 
   const isCompact = zoomCompact && ["augment", "shield", "consumable", "material", "key"].includes(item.type?.toLowerCase());

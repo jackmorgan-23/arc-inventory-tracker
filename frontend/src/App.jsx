@@ -16,6 +16,7 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 function App() {
   const inventory = useInventory();
   const auth = useAuth();
+  const [activeLoadoutIndex, setActiveLoadoutIndex] = React.useState(0);
 
   return (
     <DndContext
@@ -34,23 +35,27 @@ function App() {
             <header className="h-16 flex items-center justify-between px-10 bg-[#0a0d14]/60 backdrop-blur-md border-b border-white/5 z-10 sticky top-0">
               <div className="flex items-center gap-10">
                 {['Loadout 1', 'Loadout 2', 'Loadout 3'].map((label, i) => {
+                  const isLocked = !auth.isAuthenticated && i !== 0;
+                  const isActive = activeLoadoutIndex === i;
+                  
                   const button = (
                     <button
-                      disabled={!auth.isAuthenticated}
+                      onClick={() => !isLocked && setActiveLoadoutIndex(i)}
+                      disabled={isLocked}
                       className={`tracking-[0.2em] py-5 text-sm uppercase transition-colors ${
-                        !auth.isAuthenticated
+                        isLocked
                           ? 'text-white/20 flex items-center gap-1.5'
-                          : i === 0
+                          : isActive
                             ? 'text-white font-bold border-b-2 border-white'
                             : 'text-white/50 hover:text-white'
                       }`}
                     >
-                      {!auth.isAuthenticated && <Lock className="w-3 h-3" />}
+                      {isLocked && <Lock className="w-3 h-3" />}
                       {label}
                     </button>
                   );
 
-                  return !auth.isAuthenticated ? (
+                  return isLocked ? (
                     <Tooltip key={label} delayDuration={100}>
                       <TooltipTrigger asChild>
                         <span className="cursor-not-allowed">
@@ -95,6 +100,9 @@ function App() {
               totalWeight={inventory.totalWeight}
               maxWeight={inventory.maxWeight}
               totalCost={inventory.totalCost}
+              updateQuantity={inventory.updateQuantity}
+              removeItem={inventory.removeItem}
+              activeLoadoutIndex={activeLoadoutIndex}
             />
           </div>
         </div>

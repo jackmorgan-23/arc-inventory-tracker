@@ -12,7 +12,7 @@ export async function fetchItems() {
       ...item,
       // Provide defaults for legacy UI expectations if missing
       durability: item.type === 'weapon' ? 100 : undefined,
-      quantity: (item.type === 'ammo' || item.type === 'material') ? 0 : undefined,
+      quantity: (item.stackLimit && item.stackLimit > 1) ? item.stackLimit : undefined,
     }));
   } catch (error) {
     console.error('Failed to fetch items:', error);

@@ -4,8 +4,9 @@ import { ItemCard } from './ItemCard';
 import { cn } from '../lib/utils';
 import { Shield } from 'lucide-react';
 import { ItemHoverCard } from './ItemHoverCard';
+import { AugmentIcon, ShieldIcon, WeaponIcon, QuickUseIcon, SafePocketIcon } from './SlotIcons';
 
-function InventorySlot({ id, instance, className, iconOnly = false }) {
+function InventorySlot({ id, instance, className, iconOnly = false, updateQuantity, removeItem, bgIcon }) {
   const { isOver, setNodeRef: setDroppableRef } = useDroppable({ id });
 
   const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
@@ -26,10 +27,24 @@ function InventorySlot({ id, instance, className, iconOnly = false }) {
       {/* Small corner detail */}
       <div className="absolute top-0 right-0 w-[5px] h-[5px] border-t border-r border-white/20 opacity-50 z-10" />
       
+      {!instance && bgIcon && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {bgIcon}
+        </div>
+      )}
+
       {instance ? (
         <ItemHoverCard item={instance.item} equippedMods={instance.equippedMods} zoomCompact={true}>
           <div ref={setDraggableRef} {...listeners} {...attributes} className="absolute inset-0 cursor-grab active:cursor-grabbing hover:brightness-110">
-            <ItemCard item={instance.item} isDragging={isDragging} equippedMods={instance.equippedMods} zoomCompact={true} iconOnly={iconOnly} />
+            <ItemCard 
+              item={instance.item} 
+              isDragging={isDragging} 
+              equippedMods={instance.equippedMods} 
+              zoomCompact={true} 
+              iconOnly={iconOnly} 
+              onUpdateQuantity={updateQuantity ? (delta) => updateQuantity(id, delta) : undefined}
+              onRemove={removeItem ? () => removeItem(id) : undefined}
+            />
           </div>
         </ItemHoverCard>
       ) : null}
@@ -52,7 +67,7 @@ function SectionHeader({ title, count, total }) {
   );
 }
 
-export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost }) {
+export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost, updateQuantity, removeItem, activeLoadoutIndex = 0 }) {
   const backpackCount = Object.keys(slots).filter(k => k.startsWith('backpack')).length;
   const quickUseCount = Object.keys(slots).filter(k => k.startsWith('quickUse')).length;
   const safePocketCount = Object.keys(slots).filter(k => k.startsWith('safePocket')).length;
@@ -65,13 +80,9 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
         {/* LEFT COLUMN: Equipment & Weapons */}
         <div className="flex flex-col gap-6 w-[340px] shrink-0 pt-2">
           
-          <div className="flex items-start gap-4 mb-2">
-            <div className="w-12 h-12 rounded-full border border-cyan-500/30 flex items-center justify-center relative bg-cyan-950/20">
-               <Shield className="w-6 h-6 text-cyan-400" />
-               <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-black" />
-            </div>
+          <div className="flex items-start mb-2">
             <div className="flex flex-col gap-1 mt-0.5">
-              <h1 className="text-xl font-bold tracking-[0.2em] font-sans text-white mb-0 leading-none">LOADOUT</h1>
+              <h1 className="text-xl font-bold tracking-[0.2em] font-sans text-white mb-0 leading-none">LOADOUT {activeLoadoutIndex + 1}</h1>
               <div className="flex items-center gap-4">
                 <span className={`text-[12px] font-bold tracking-widest ${Number(totalWeight) > Number(maxWeight) ? "text-red-500" : "text-green-500"} flex items-center gap-1`}>
                   <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2L6 22h12L12 2z"/></svg>
@@ -88,14 +99,14 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
           <div>
              <SectionHeader title="Equipment" />
              <div className="flex gap-3">
-               <InventorySlot id="equipment-0" instance={slots['equipment-0']} className="h-[90px] flex-1 border-pink-500/20" />
-               <InventorySlot id="equipment-1" instance={slots['equipment-1']} className="h-[90px] flex-1 border-green-500/20" />
+               <InventorySlot id="equipment-0" instance={slots['equipment-0']} className="h-[90px] flex-1 border-pink-500/20" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<AugmentIcon />} />
+               <InventorySlot id="equipment-1" instance={slots['equipment-1']} className="h-[90px] flex-1 border-green-500/20" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<ShieldIcon />} />
              </div>
           </div>
           <div>
              <div className="flex flex-col gap-3">
                <div className="bg-[#121620]/60 rounded-xl p-3 border border-white/5 relative">
-                 <InventorySlot id="weapon-0" instance={slots['weapon-0']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" />
+                 <InventorySlot id="weapon-0" instance={slots['weapon-0']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<WeaponIcon />} />
                  <div className="flex gap-2 justify-start px-2 min-h-[40px]">
                    {slots['weapon-0']?.item?.modSlots && Object.keys(slots['weapon-0'].item.modSlots).map((modKey) => (
                      <InventorySlot 
@@ -104,13 +115,15 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
                        instance={slots['weapon-0']?.equippedMods?.[modKey]} 
                        className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
                        iconOnly={true}
+                       updateQuantity={updateQuantity}
+                       removeItem={removeItem}
                      />
                    ))}
                  </div>
                </div>
                
                  <div className="bg-[#121620]/60 rounded-xl p-3 border border-white/5 relative">
-                 <InventorySlot id="weapon-1" instance={slots['weapon-1']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" />
+                 <InventorySlot id="weapon-1" instance={slots['weapon-1']} className="h-[130px] w-full border-pink-500/20 bg-transparent rounded-lg mb-3" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<WeaponIcon />} />
                  <div className="flex gap-2 justify-start px-2 min-h-[40px]">
                    {slots['weapon-1']?.item?.modSlots && Object.keys(slots['weapon-1'].item.modSlots).map((modKey) => (
                      <InventorySlot 
@@ -119,6 +132,8 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
                        instance={slots['weapon-1']?.equippedMods?.[modKey]} 
                        className="w-10 h-10 border border-white/10 rounded-sm bg-[#0a0d14] flex items-center justify-center relative shadow-inner" 
                        iconOnly={true}
+                       updateQuantity={updateQuantity}
+                       removeItem={removeItem}
                      />
                    ))}
                  </div>
@@ -133,7 +148,7 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
           <div className="bg-[#121620]/80 rounded-xl p-3 border border-white/5 shadow-lg backdrop-blur-md">
             <div className="grid grid-cols-4 gap-[4px] auto-rows-[110px]">
               {[...Array(config.backpack)].map((_, i) => (
-                 <InventorySlot key={`backpack-${i}`} id={`backpack-${i}`} instance={slots[`backpack-${i}`]} className="w-[85px]" />
+                 <InventorySlot key={`backpack-${i}`} id={`backpack-${i}`} instance={slots[`backpack-${i}`]} className="w-[85px]" updateQuantity={updateQuantity} removeItem={removeItem} />
               ))}
             </div>
           </div>
@@ -146,7 +161,7 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
             <div className="bg-[#121620]/80 rounded-xl p-3 border border-white/5 shadow-lg backdrop-blur-md w-fit">
               <div className="flex flex-wrap gap-[6px]">
                  {[...Array(config.quickUse || 0)].map((_, i) => (
-                   <InventorySlot key={`quickUse-${i}`} id={`quickUse-${i}`} instance={slots[`quickUse-${i}`]} className="w-[88px] h-20" />
+                   <InventorySlot key={`quickUse-${i}`} id={`quickUse-${i}`} instance={slots[`quickUse-${i}`]} className="w-[88px] h-20" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<QuickUseIcon />} />
                  ))}
               </div>
             </div>
@@ -157,7 +172,7 @@ export function InventoryGrid({ slots, config, totalWeight, maxWeight, totalCost
             <div className="bg-[#121620]/80 rounded-xl p-3 border border-white/5 shadow-lg backdrop-blur-md w-fit">
               <div className="flex gap-[6px] flex-wrap max-w-xs">
                  {[...Array(config.safePocket || 0)].map((_, i) => (
-                   <InventorySlot key={`safePocket-${i}`} id={`safePocket-${i}`} instance={slots[`safePocket-${i}`]} className="w-[100px] h-20" />
+                   <InventorySlot key={`safePocket-${i}`} id={`safePocket-${i}`} instance={slots[`safePocket-${i}`]} className="w-[100px] h-20" updateQuantity={updateQuantity} removeItem={removeItem} bgIcon={<SafePocketIcon />} />
                  ))}
               </div>
             </div>

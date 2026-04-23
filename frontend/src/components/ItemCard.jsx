@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Icons from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 const rarityTopGlows = {
   common:    "bg-[radial-gradient(ellipse_at_top,rgba(220,220,230,0.22)_0%,rgba(220,220,230,0)_75%)] group-hover:bg-[radial-gradient(ellipse_at_top,rgba(220,220,230,0.38)_0%,rgba(220,220,230,0)_75%)]",
@@ -85,7 +86,7 @@ const AmmoIcon = ({ type }) => {
   );
 }
 
-export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, iconOnly = false }) {
+export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, iconOnly = false, onUpdateQuantity, onRemove }) {
   if (!item) return null;
 
   const itemType = item.type?.toLowerCase() || '';
@@ -168,6 +169,58 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, 
         />
       )}
 
+      {/* Action Menu (only if in inventory) */}
+      {(onUpdateQuantity || onRemove) && (
+        <div 
+          className="absolute top-1.5 right-1.5 z-30" 
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="w-6 h-6 flex items-center justify-center rounded bg-black/40 hover:bg-black/80 text-white/70 hover:text-white transition-colors border border-white/10 shadow-[0_2px_4px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <Icons.MoreHorizontal className="w-4 h-4" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent 
+              side="right" 
+              align="start" 
+              className="w-40 bg-[#0a0d14]/95 border-white/10 p-1.5 shadow-2xl backdrop-blur-xl z-50 rounded-lg flex flex-col gap-1.5"
+              onPointerDownOutside={(e) => e.stopPropagation()}
+            >
+              {(item.stackLimit && item.stackLimit > 1) && (
+                <div className="flex items-center justify-between bg-black/50 rounded p-0.5 border border-white/5">
+                  <button 
+                    onClick={() => onUpdateQuantity && onUpdateQuantity(-1)}
+                    className="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 rounded transition-colors disabled:opacity-50"
+                    disabled={!item.quantity || item.quantity <= 1}
+                  >
+                    <Icons.Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-xs font-bold text-white tabular-nums tracking-wider px-1">
+                    {item.quantity || 1}
+                  </span>
+                  <button 
+                    onClick={() => onUpdateQuantity && onUpdateQuantity(1)}
+                    className="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 rounded transition-colors disabled:opacity-50"
+                    disabled={item.quantity >= (item.stackLimit || 1)}
+                  >
+                    <Icons.Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+              <button 
+                onClick={() => onRemove && onRemove()}
+                className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 text-[10px] font-bold tracking-widest text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded transition-colors"
+              >
+                <Icons.Trash2 className="w-3.5 h-3.5" />
+                DELETE
+              </button>
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+
       {/* Centered Item Icon & Glow */}
       <div className={cn(
         "absolute inset-0 flex items-center justify-center z-10 pointer-events-none",
@@ -203,24 +256,14 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, 
          {/* Left Side: Ammo or Quantity */}
          <div className="flex items-center">
            {isWeapon ? (
-             <>
-               <AmmoIcon type={ammoType} />
-               <span className={cn("text-[11px] font-semibold leading-none mt-[1px]", hasMagAugment ? "text-cyan-400" : "text-zinc-200")}>
-                 0/{magSize}
-               </span>
-             </>
-           ) : item.quantity !== undefined ? (
+             <AmmoIcon type={ammoType} />
+           ) : (item.quantity !== undefined && item.stackLimit > 1) ? (
              <span className="text-[11px] font-semibold text-zinc-200 leading-none mt-[1px]">×{item.quantity}</span>
            ) : null}
          </div>
          
-         {/* Right Side: Durability & Tier Badge */}
+         {/* Right Side: Tier Badge */}
          <div className="flex items-center gap-[6px]">
-           {isWeapon && (
-             <span className="text-[10px] text-zinc-400 font-sans tracking-wide leading-none mt-[1px]">
-               100/100
-             </span>
-           )}
            {itemTier && (
              <span className="text-[12px] font-serif tracking-widest text-zinc-500 font-bold leading-none mt-[1px]">
                {itemTier}
