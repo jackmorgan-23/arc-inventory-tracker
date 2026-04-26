@@ -6,10 +6,13 @@ echo "Starting ARC-INVENTORY Deployment..."
 echo "Ensuring API Gateway API exists..."
 gcloud api-gateway apis create arc-inventory-api --project arc-492718 2>/dev/null || true
 
+
+
+echo "Frontend..."
+firebase deploy --only hosting
 # Submit the Cloud Build pipeline
 echo "Triggering Cloud Build for backend services..."
 gcloud builds submit --config infra/cloudbuild.yaml .
 
 echo "Backend deployment finished. Starting Frontend deploy.... separate via Firebase Hosting."
 
-firebase deploy --only hosting
