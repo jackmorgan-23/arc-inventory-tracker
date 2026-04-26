@@ -1,0 +1,14 @@
+steps:
+  # 1. Install frontend dependencies
+  - name: 'node:24'
+    entrypoint: 'npm'
+    args: ['install']
+    dir: 'frontend'
+
+  # 2. Build frontend
+  - name: 'node:24'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    dir: 'frontend'
+    env:
+      - 'VITE_API_URL=https://arc-inventory-gateway-7sn18qso.ue.gateway.dev'

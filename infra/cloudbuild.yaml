@@ -1,0 +1,61 @@
+steps:
+  # 1. Install frontend dependencies for API-compatible builds
+  - name: 'node:24'
+    entrypoint: 'npm'
+    args: ['install']
+    dir: 'frontend'
+
+  # 2. Build frontend bundle (deployed separately via Firebase Hosting)
+  - name: 'node:24'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    dir: 'frontend'
+    env:
+      - 'VITE_API_URL=https://arc-inventory-gateway-7sn18qso.ue.gateway.dev'
+
+  # 3. Deploy fn-items
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: ['functions', 'deploy', 'fn-items', '--gen2', '--runtime', 'nodejs24', '--region', 'us-east1', '--source', 'functions/fn-items', '--entry-point', 'fnItems', '--trigger-http', '--allow-unauthenticated', '--set-env-vars', 'BUCKET_NAME=arc-raiders-item-cache']
+
+  # 4. Deploy fn-inventory
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: ['functions', 'deploy', 'fn-inventory', '--gen2', '--runtime', 'nodejs24', '--region', 'us-east1', '--source', 'functions/fn-inventory', '--entry-point', 'fnInventory', '--trigger-http', '--set-env-vars', 'FIRESTORE_DATABASE=arc-raiders-database']
+
+  # 5. Deploy fn-item-sync
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: ['functions', 'deploy', 'fn-item-sync', '--gen2', '--runtime', 'nodejs24', '--region', 'us-east1', '--source', 'functions/fn-item-sync', '--entry-point', 'fnItemSync', '--trigger-http', '--memory', '1Gi', '--timeout', '120s', '--set-env-vars', 'BUCKET_NAME=arc-raiders-item-cache']
+
+  # 6. Generate API Gateway Spec
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        FN_ITEMS_URL=$$(gcloud functions describe fn-items --region us-east1 --gen2 --format="value(serviceConfig.uri)")
+        FN_INVENTORY_URL=$$(gcloud functions describe fn-inventory --region us-east1 --gen2 --format="value(serviceConfig.uri)")
+        sed "s|_FN_ITEMS_URL_|$$FN_ITEMS_URL|g" infra/api-spec.yaml.template > infra/api-spec-generated.yaml
+        sed -i "s|_FN_INVENTORY_URL_|$$FN_INVENTORY_URL|g" infra/api-spec-generated.yaml
+
+  # 7. Deploy API Gateway config
+  # Note: Requires arc-inventory-api to be created beforehand: gcloud api-gateway apis create arc-inventory-api --project arc-492718
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud api-gateway api-configs create "config-$BUILD_ID" --api arc-inventory-api --openapi-spec infra/api-spec-generated.yaml --project arc-492718
+
+  # 8. Deploy API Gateway
+  # Note: Requires API Gateway API to be enabled, and service account to have permissions.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud api-gateway gateways update arc-inventory-gateway --api arc-inventory-api --api-config "config-$BUILD_ID" --location us-east1 --project arc-492718 || gcloud api-gateway gateways create arc-inventory-gateway --api arc-inventory-api --api-config "config-$BUILD_ID" --location us-east1 --project arc-492718
+
+options:
+  logging: CLOUD_LOGGING_ONLY

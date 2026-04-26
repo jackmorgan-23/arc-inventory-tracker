@@ -64,7 +64,7 @@ export function ItemHoverCard({ item, children, equippedMods, zoomCompact = fals
 
   return (
     <HoverCard openDelay={200} closeDelay={100}>
-      <HoverCardTrigger asChild>
+      <HoverCardTrigger>
         {children}
       </HoverCardTrigger>
       <HoverCardContent 

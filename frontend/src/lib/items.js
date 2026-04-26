@@ -1,16 +1,20 @@
+const ITEMS_FN_URL = 'https://fn-items-qfu2armj7q-ue.a.run.app';
+const GATEWAY_URL = 'https://arc-inventory-gateway-7sn18qso.ue.gateway.dev';
+
 export async function fetchItems() {
   try {
-    const response = await fetch('/items_v2.json');
+    // Items are public—fetch them directly without auth headers to avoid CORS preflight issues
+    const baseUrl = window.location.hostname === 'localhost' ? ITEMS_FN_URL : GATEWAY_URL;
+    const url = baseUrl === GATEWAY_URL ? `${baseUrl}/items` : baseUrl;
+    
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
     
-    // We already did most mapping in the process_items.js script.
-    // We just return it, ensuring durability/quantity placeholders exist for the UI.
     return data.map(item => ({
       ...item,
-      // Provide defaults for legacy UI expectations if missing
       durability: item.type === 'weapon' ? 100 : undefined,
       quantity: (item.stackLimit && item.stackLimit > 1) ? item.stackLimit : undefined,
     }));

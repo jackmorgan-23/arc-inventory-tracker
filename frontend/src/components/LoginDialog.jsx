@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,17 +8,9 @@ import {
 } from './ui/dialog';
 import { Button } from './ui/button';
 
-// Google "G" icon SVG
-function GoogleIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-5">
-      <path
-        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
+const CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  '610891863720-762ompnl3j4m0futovafbn0keapech1k.apps.googleusercontent.com';
 
 // Discord icon SVG
 function DiscordIcon() {
@@ -32,7 +24,87 @@ function DiscordIcon() {
   );
 }
 
-export function LoginDialog({ open, onOpenChange, onLogin, isLoading }) {
+export function LoginDialog({ open, onOpenChange, onLoginWithToken, isLoading }) {
+  const googleButtonRef = useRef(null);
+  const [isScriptLoaded, setIsScriptLoaded] = React.useState(!!window.google?.accounts?.id);
+  const [initError, setInitError] = React.useState(null);
+
+  // Check if script is loaded
+  useEffect(() => {
+    if (isScriptLoaded) return;
+
+    const checkScript = () => {
+      if (window.google?.accounts?.id) {
+        setIsScriptLoaded(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkScript()) return;
+
+    const interval = setInterval(() => {
+      if (checkScript()) clearInterval(interval);
+    }, 500);
+
+    // Timeout after 10s
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      if (!window.google?.accounts?.id) {
+        setInitError("Google Sign-In failed to load. Please check your internet connection or ad-blocker.");
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [isScriptLoaded]);
+
+  useEffect(() => {
+    if (open && isScriptLoaded && !initError) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: (response) => {
+            console.log("GSI: Credential received");
+            onLoginWithToken(response.credential);
+          },
+          auto_select: false, // Don't auto-login, let user choose
+        });
+
+        // Use a longer delay and multiple attempts to find the container
+        let attempts = 0;
+        const tryRender = () => {
+          const container = document.getElementById('google-signin-button');
+          if (container) {
+            container.innerHTML = '';
+            window.google.accounts.id.renderButton(container, {
+              theme: 'outline',
+              size: 'large',
+              width: 350,
+              text: 'continue_with',
+              shape: 'rectangular',
+            });
+            console.log("GSI: Button rendered");
+            // Also trigger the "One Tap" prompt like in Lab 7
+            window.google.accounts.id.prompt();
+          } else if (attempts < 10) {
+            attempts++;
+            setTimeout(tryRender, 150);
+          } else {
+            setInitError("Login button container not found.");
+          }
+        };
+
+        setTimeout(tryRender, 150);
+      } catch (err) {
+        console.error("GSI: Init error:", err);
+        setInitError("Failed to initialize Google login.");
+      }
+    }
+  }, [open, isScriptLoaded, onLoginWithToken, initError]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -48,18 +120,21 @@ export function LoginDialog({ open, onOpenChange, onLogin, isLoading }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3 pt-2">
-          <Button
-            variant="outline"
-            className="h-11 gap-3 border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white transition-all cursor-pointer"
-            onClick={() => onLogin('google')}
-            disabled={isLoading}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </Button>
+        <div className="flex flex-col items-center gap-4 pt-4 w-full min-h-[60px]">
+          {initError ? (
+            <div className="text-red-400 text-xs text-center p-3 bg-red-500/10 rounded border border-red-500/20 w-full">
+              {initError}
+            </div>
+          ) : isScriptLoaded ? (
+            <div id="google-signin-button" className="w-full flex justify-center min-h-[40px]" />
+          ) : (
+            <div className="flex flex-col items-center gap-3 text-white/40 text-sm py-2">
+              <div className="w-5 h-5 border-2 border-white/10 border-t-white/60 rounded-full animate-spin" />
+              <span className="tracking-widest uppercase text-[10px] font-bold">Connecting to Google...</span>
+            </div>
+          )}
 
-          <div className="relative flex items-center py-1">
+          <div className="relative flex items-center py-1 w-full">
             <div className="flex-grow border-t border-white/10" />
             <span className="mx-3 text-xs text-white/30 uppercase tracking-widest">or</span>
             <div className="flex-grow border-t border-white/10" />
@@ -67,8 +142,8 @@ export function LoginDialog({ open, onOpenChange, onLogin, isLoading }) {
 
           <Button
             variant="outline"
-            className="h-11 gap-3 border-white/10 bg-white/5 text-[#7289da] hover:bg-[#7289da]/10 hover:text-[#7289da] transition-all cursor-pointer"
-            onClick={() => onLogin('discord')}
+            className="h-11 w-full gap-3 border-white/10 bg-white/5 text-[#7289da] hover:bg-[#7289da]/10 hover:text-[#7289da] transition-all cursor-pointer"
+            onClick={() => alert('Discord login coming soon!')}
             disabled={isLoading}
           >
             <DiscordIcon />

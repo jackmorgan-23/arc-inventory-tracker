@@ -8,7 +8,7 @@ function Dialog({ ...props }) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
-function DialogTrigger({ ...props }) {
+function DialogTrigger({ asChild, ...props }) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 

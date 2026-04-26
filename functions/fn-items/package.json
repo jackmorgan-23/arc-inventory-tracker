@@ -1,0 +1,14 @@
+{
+  "name": "fn-items",
+  "version": "1.0.0",
+  "description": "Cloud Run Function for serving the items catalog.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=fnItems"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.0",
+    "@google-cloud/storage": "^7.9.0"
+  }
+}

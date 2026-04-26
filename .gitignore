@@ -7,20 +7,34 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Google Cloud & Deployments
+# Google Cloud / Firebase local state
 .gcloud/
 .cloudbuild/
-package-lock.json.map
+.firebase/
+.agents/
+firebase-debug.log
+frontend/firebase-debug.log
 
-# Archives/Logs (Common in cloud functions)
+# Archives
 *.zip
 *.tar.gz
-npm-debug.log*
-yarn-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+frontend/node_modules/
+functions/**/node_modules/
+
+# Build output
+dist/
+dist-ssr/
+frontend/dist/
+
+# Vendored repo metadata
+arcraiders-data/.git/
+
+# Generated maps / misc local files
+package-lock.json.map
+skills-lock.json
 *.local
 
 # Editor directories and files
@@ -34,7 +48,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment Variables (More explicit)
+# Environment variables
 .env
 .env.*
 !.env.example
+frontend/.env.local
+frontend/.env.development
+frontend/.env.test

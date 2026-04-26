@@ -1,0 +1,17 @@
+{
+  "Combat Mk. 1": { "backpack": 16, "quickUse": 4, "safePocket": 1, "wlimit": 45, "allowedShields": ["Light", "Medium"], "augmentSlots": [] },
+  "Combat Mk. 2": { "backpack": 18, "quickUse": 4, "safePocket": 1, "wlimit": 55, "allowedShields": ["Light", "Medium", "Heavy"], "augmentSlots": ["grenade"] },
+  "Combat Mk. 3 (Aggressive)": { "backpack": 18, "quickUse": 4, "safePocket": 1, "wlimit": 65, "allowedShields": ["Light", "Medium", "Heavy"], "augmentSlots": ["grenade", "grenade"] },
+  "Combat Mk. 3 (Flanking)": { "backpack": 20, "quickUse": 5, "safePocket": 2, "wlimit": 60, "allowedShields": ["Light"], "augmentSlots": ["deployable", "deployable", "deployable"] },
+  "Free Loadout Augment": { "backpack": 14, "quickUse": 4, "safePocket": 0, "wlimit": 35, "allowedShields": ["Light"], "augmentSlots": [] },
+  "Looting Mk. 1": { "backpack": 18, "quickUse": 4, "safePocket": 1, "wlimit": 50, "allowedShields": ["Light"], "augmentSlots": [] },
+  "Looting Mk. 2": { "backpack": 22, "quickUse": 4, "safePocket": 2, "wlimit": 60, "allowedShields": ["Light"], "augmentSlots": ["trinket", "trinket", "trinket"] },
+  "Looting Mk. 3 (Cautious)": { "backpack": 24, "quickUse": 5, "safePocket": 2, "wlimit": 70, "allowedShields": ["Light"], "augmentSlots": [] },
+  "Looting Mk. 3 (Safekeeper)": { "backpack": 18, "quickUse": 4, "safePocket": 1, "wlimit": 65, "allowedShields": ["Light", "Medium", "Heavy"], "augmentSlots": ["trinket", "trinket"] },
+  "Looting Mk. 3 (Survivor)": { "backpack": 20, "quickUse": 5, "safePocket": 3, "wlimit": 80, "allowedShields": ["Light", "Medium"], "augmentSlots": ["deployable"] },
+  "Tactical Mk. 1": { "backpack": 15, "quickUse": 5, "safePocket": 1, "wlimit": 40, "allowedShields": ["Light", "Medium"], "augmentSlots": [] },
+  "Tactical Mk. 2": { "backpack": 17, "quickUse": 5, "safePocket": 1, "wlimit": 45, "allowedShields": ["Light", "Medium"], "augmentSlots": ["deployable"] },
+  "Tactical Mk. 3 (Defensive)": { "backpack": 20, "quickUse": 5, "safePocket": 1, "wlimit": 60, "allowedShields": ["Light", "Medium", "Heavy"], "augmentSlots": [] },
+  "Tactical Mk. 3 (Healing)": { "backpack": 16, "quickUse": 4, "safePocket": 3, "wlimit": 55, "allowedShields": ["Light", "Medium"], "augmentSlots": ["healing", "healing", "healing"] },
+  "Tactical Mk. 3 (Revival)": { "backpack": 16, "quickUse": 5, "safePocket": 2, "wlimit": 65, "allowedShields": ["Light"], "augmentSlots": [] }
+}

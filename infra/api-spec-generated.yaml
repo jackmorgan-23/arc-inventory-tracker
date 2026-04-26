@@ -1,0 +1,132 @@
+swagger: '2.0'
+info:
+  title: Arc Inventory API
+  description: API Gateway for Arc Inventory
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /verifyToken:
+    post:
+      summary: Verify Google ID Token
+      operationId: verifyToken
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '200':
+          description: A successful response
+    options:
+      summary: CORS support
+      operationId: verifyTokenOptions
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '204':
+          description: No content
+  /logout:
+    post:
+      summary: Clear app session
+      operationId: logout
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '200':
+          description: A successful response
+    options:
+      summary: CORS support
+      operationId: logoutOptions
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '204':
+          description: No content
+  /items:
+    get:
+      summary: Get all items
+      operationId: getItems
+      x-google-backend:
+        address: https://fn-items-qfu2armj7q-ue.a.run.app
+      responses:
+        '200':
+          description: A successful response
+    options:
+      summary: CORS support
+      operationId: getItemsOptions
+      x-google-backend:
+        address: https://fn-items-qfu2armj7q-ue.a.run.app
+      responses:
+        '204':
+          description: No content
+  /loadouts:
+    get:
+      summary: Get all loadouts
+      operationId: getLoadouts
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+      responses:
+        '200':
+          description: A successful response
+    options:
+      summary: CORS support
+      operationId: getLoadoutsOptions
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+      responses:
+        '204':
+          description: No content
+  /loadouts/{index}:
+    parameters:
+      - name: index
+        in: path
+        required: true
+        type: string
+    get:
+      summary: Get a loadout
+      operationId: getLoadout
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '200':
+          description: A successful response
+    post:
+      summary: Save a loadout
+      operationId: saveLoadout
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '200':
+          description: A successful response
+    delete:
+      summary: Delete a loadout
+      operationId: deleteLoadout
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '200':
+          description: A successful response
+    options:
+      summary: CORS support
+      operationId: loadoutDetailOptions
+      x-google-backend:
+        address: https://fn-inventory-qfu2armj7q-ue.a.run.app
+        path_translation: APPEND_PATH_TO_ADDRESS
+      responses:
+        '204':
+          description: No content
+securityDefinitions:
+  google_oidc:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v3/certs"
+    x-google-audiences: "610891863720-762ompnl3j4m0futovafbn0keapech1k.apps.googleusercontent.com"

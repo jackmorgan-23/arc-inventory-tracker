@@ -8,9 +8,7 @@ function HoverCard({
   return <PreviewCardPrimitive.Root data-slot="hover-card" {...props} />;
 }
 
-function HoverCardTrigger({
-  ...props
-}) {
+function HoverCardTrigger({ asChild, ...props }) {
   return (<PreviewCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />);
 }
 

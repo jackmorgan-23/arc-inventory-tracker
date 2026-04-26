@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 
 export const BASE_CONFIG = {
   equipment: 2,
@@ -50,8 +50,22 @@ const isValidForAugmentSlot = (item, allowedType) => {
   return false;
 };
 
-export function useInventory() {
-  const [slots, setSlots] = useState({});
+export function useInventory(initialSlots = {}, onSave = null) {
+  const [slots, setSlots] = useState(initialSlots);
+
+  useEffect(() => {
+    setSlots(initialSlots || {});
+  }, [initialSlots]);
+
+  const handleSlotsChange = useCallback((updater) => {
+    setSlots((prev) => {
+      const newSlots = typeof updater === 'function' ? updater(prev) : updater;
+      if (onSave) {
+        onSave(newSlots);
+      }
+      return newSlots;
+    });
+  }, [onSave]);
   const [activeItem, setActiveItem] = useState(null);
 
   const calculateWeight = useCallback(() => {
@@ -116,7 +130,7 @@ export function useInventory() {
 
     if (!over || String(over.id).startsWith('browser')) {
       if (sourceSlot) {
-        setSlots((prev) => {
+        handleSlotsChange((prev) => {
           const newSlots = { ...prev };
           if (sourceSlot.includes('-att-')) {
             const [parentId, modKey] = sourceSlot.split('-att-');
@@ -141,7 +155,7 @@ export function useInventory() {
       return;
     }
 
-    setSlots((prev) => {
+    handleSlotsChange((prev) => {
       const activeItemData = active.data.current.item;
       const targetItemType = activeItemData?.type;
       const targetItemSubType = activeItemData?.subType;
@@ -339,11 +353,11 @@ export function useInventory() {
   };
 
   const clearInventory = () => {
-    setSlots({});
+    handleSlotsChange({});
   };
 
   const updateQuantity = useCallback((slotId, delta, overrideQuantity = null) => {
-    setSlots(prev => {
+    handleSlotsChange(prev => {
       const instance = prev[slotId];
       if (!instance) return prev;
       
@@ -373,7 +387,7 @@ export function useInventory() {
   }, []);
 
   const removeItem = useCallback((slotId) => {
-    setSlots(prev => {
+    handleSlotsChange(prev => {
       const newSlots = { ...prev };
       delete newSlots[slotId];
       return newSlots;

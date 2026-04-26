@@ -1,0 +1,16 @@
+{
+  "name": "fn-item-sync",
+  "version": "1.0.0",
+  "description": "Cloud Run Function for syncing items from GitHub to GCS.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=fnItemSync"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.0",
+    "@google-cloud/storage": "^7.9.0",
+    "adm-zip": "^0.5.17",
+    "node-fetch": "^3.3.2"
+  }
+}

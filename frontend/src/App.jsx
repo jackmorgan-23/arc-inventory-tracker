@@ -3,20 +3,29 @@ import React from 'react';
 import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
 import { useInventory } from './hooks/useInventory';
 import { useAuth } from './hooks/useAuth';
+import { useLoadouts } from './hooks/useLoadouts';
 import { ItemBrowser } from './components/ItemBrowser';
 import { InventoryGrid } from './components/InventoryGrid';
 import { ItemCard } from './components/ItemCard';
 import { LoginDialog } from './components/LoginDialog';
 import NeonBackground from './components/NeonBackground';
-import { Shield, LogIn, Lock } from 'lucide-react';
+import { Shield, LogIn, Lock, Loader2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './components/ui/tooltip';
 
 import { snapCenterToCursor } from '@dnd-kit/modifiers';
 
 function App() {
-  const inventory = useInventory();
   const auth = useAuth();
+  const loadoutsMgr = useLoadouts({
+    user: auth.user,
+    isAuthenticated: auth.isAuthenticated,
+  });
   const [activeLoadoutIndex, setActiveLoadoutIndex] = React.useState(0);
+
+  const initialSlots = loadoutsMgr.loadouts[activeLoadoutIndex] || {};
+  const inventory = useInventory(initialSlots, (slotsData) => {
+    loadoutsMgr.saveLoadout(activeLoadoutIndex, slotsData);
+  });
 
   return (
     <DndContext
@@ -57,9 +66,10 @@ function App() {
 
                   return isLocked ? (
                     <Tooltip key={label} delayDuration={100}>
-                      <TooltipTrigger asChild>
-                        <span className="cursor-not-allowed">
-                          {React.cloneElement(button, { className: button.props.className + " pointer-events-none" })}
+                      <TooltipTrigger>
+                        <span className="cursor-not-allowed flex items-center gap-1.5 py-5 text-sm uppercase text-white/20 tracking-[0.2em]">
+                          <Lock className="w-3 h-3" />
+                          {label}
                         </span>
                       </TooltipTrigger>
                       <TooltipContent className="bg-black/90 border border-white/10 text-white shadow-2xl backdrop-blur-md">
@@ -74,6 +84,14 @@ function App() {
                 })}
               </div>
               <div className="flex items-center font-sans">
+                {loadoutsMgr.isLoading && <Loader2 className="w-4 h-4 mr-4 animate-spin text-white/50" />}
+                {loadoutsMgr.isSaving && <span className="text-white/30 text-xs mr-4">Saving...</span>}
+                {!loadoutsMgr.isSaving && loadoutsMgr.saveError && (
+                  <span className="text-red-300/80 text-xs mr-4">{loadoutsMgr.saveError}</span>
+                )}
+                {!loadoutsMgr.isLoading && loadoutsMgr.loadError && (
+                  <span className="text-amber-200/80 text-xs mr-4">{loadoutsMgr.loadError}</span>
+                )}
                 {/* Login / Logout */}
                 {auth.isAuthenticated ? (
                   <button
@@ -110,7 +128,7 @@ function App() {
         <LoginDialog
           open={auth.showLoginDialog}
           onOpenChange={auth.setShowLoginDialog}
-          onLogin={auth.login}
+          onLoginWithToken={auth.loginWithToken}
           isLoading={auth.isLoading}
         />
       </NeonBackground>

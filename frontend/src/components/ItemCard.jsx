@@ -105,7 +105,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, 
             src={item.iconUrl} 
             alt={item.name} 
             className="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
-            fetchpriority="high"
+            fetchPriority="high"
           />
         ) : (
           <IconComponent 
@@ -177,10 +177,8 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, 
           onClick={(e) => e.stopPropagation()}
         >
           <Popover>
-            <PopoverTrigger asChild>
-              <button className="w-6 h-6 flex items-center justify-center rounded bg-black/40 hover:bg-black/80 text-white/70 hover:text-white transition-colors border border-white/10 shadow-[0_2px_4px_rgba(0,0,0,0.5)] backdrop-blur-md">
-                <Icons.MoreHorizontal className="w-4 h-4" />
-              </button>
+            <PopoverTrigger className="w-6 h-6 flex items-center justify-center rounded bg-black/40 hover:bg-black/80 text-white/70 hover:text-white transition-colors border border-white/10 shadow-[0_2px_4px_rgba(0,0,0,0.5)] backdrop-blur-md">
+              <Icons.MoreHorizontal className="w-4 h-4" />
             </PopoverTrigger>
             <PopoverContent 
               side="right" 
@@ -236,7 +234,7 @@ export function ItemCard({ item, isDragging, equippedMods, zoomCompact = false, 
                 ? "scale-[1.15] group-hover:scale-[1.22]" 
                 : "group-hover:scale-[1.03]"
             )}
-            fetchpriority="high"
+            fetchPriority="high"
           />
         ) : (
           <IconComponent 
