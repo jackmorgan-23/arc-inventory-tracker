@@ -49,6 +49,7 @@ skills-lock.json
 *.sw?
 
 # Environment variables
+bq-env/
 .env
 .env.*
 !.env.example

@@ -1,13 +1,6 @@
-const ITEMS_FN_URL = 'https://fn-items-qfu2armj7q-ue.a.run.app';
-const GATEWAY_URL = 'https://arc-inventory-gateway-7sn18qso.ue.gateway.dev';
-
 export async function fetchItems() {
   try {
-    // Items are public—fetch them directly without auth headers to avoid CORS preflight issues
-    const baseUrl = window.location.hostname === 'localhost' ? ITEMS_FN_URL : GATEWAY_URL;
-    const url = baseUrl === GATEWAY_URL ? `${baseUrl}/items` : baseUrl;
-    
-    const response = await fetch(url);
+    const response = await fetch('/items_v2.json');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
